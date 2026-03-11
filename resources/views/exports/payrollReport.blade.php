@@ -1,0 +1,268 @@
+<table>
+    <thead>
+        <tr>
+            <th colspan="17" style="font-weight: bold; font-size: 14px; text-align: center; background-color: #1e40af; color: #ffffff;">
+                LAPORAN PENGGAJIAN KARYAWAN
+            </th>
+        </tr>
+        <tr>
+            <th colspan="17" style="font-weight: bold; font-size: 12px; text-align: center; background-color: #3b82f6; color: #ffffff;">
+                {{ Auth::user()->compani->company ?? 'Company Name' }}
+            </th>
+        </tr>
+        <tr>
+            <th colspan="17" style="font-size: 10px; text-align: center; background-color: #60a5fa; color: #ffffff;">
+                Periode: {{ \Carbon\Carbon::parse($end)->format('M Y') }}
+            </th>
+        </tr>
+        <tr><th colspan="17"></th></tr>
+
+        {{-- Header Row 1 (Main Headers) --}}
+        <tr>
+            <th rowspan="2" style="border: 1px solid #000; font-weight: bold; background-color: #e5e7eb; text-align: center; vertical-align: middle;">NAMA</th>
+            <th rowspan="2" style="border: 1px solid #000; font-weight: bold; background-color: #e5e7eb; text-align: center; vertical-align: middle;">UNIT</th>
+            <th rowspan="2" style="border: 1px solid #000; font-weight: bold; background-color: #e5e7eb; text-align: center; vertical-align: middle;">GAJI</th>
+            <th rowspan="2" style="border: 1px solid #000; font-weight: bold; background-color: #dbeafe; text-align: center; vertical-align: middle;">TUNJ. JABATAN</th>
+            <th colspan="2" style="border: 1px solid #000; font-weight: bold; background-color: #fef3c7; text-align: center;">IZIN</th>
+            <th colspan="2" style="border: 1px solid #000; font-weight: bold; background-color: #fef3c7; text-align: center;">ALPHA</th>
+            <th colspan="2" style="border: 1px solid #000; font-weight: bold; background-color: #fde68a; text-align: center;">BPJS TK</th>
+            <th colspan="2" style="border: 1px solid #000; font-weight: bold; background-color: #fde68a; text-align: center;">BPJS KESEHATAN</th>
+            <th rowspan="2" style="border: 1px solid #000; font-weight: bold; background-color: #a7f3d0; text-align: center; vertical-align: middle;">TOTAL GAJI<br>+ BPJS</th>
+            <th rowspan="2" style="border: 1px solid #000; font-weight: bold; background-color: #86efac; text-align: center; vertical-align: middle;">THP</th>
+            <th rowspan="2" style="border: 1px solid #000; font-weight: bold; background-color: #fde68a; text-align: center; vertical-align: middle;">INFAQ</th>
+            <th rowspan="2" style="border: 1px solid #000; font-weight: bold; background-color: #fca5a5; text-align: center; vertical-align: middle;">SDI</th>
+            <th rowspan="2" style="border: 1px solid #000; font-weight: bold; background-color: #a7f3d0; text-align: center; vertical-align: middle;">PAYROLL</th>
+        </tr>
+        
+        {{-- Header Row 2 (Sub Headers) --}}
+        <tr>
+            <th style="border: 1px solid #000; font-weight: bold; background-color: #fef3c7; text-align: center; font-size: 9px;">Hari</th>
+            <th style="border: 1px solid #000; font-weight: bold; background-color: #fef3c7; text-align: center; font-size: 9px;">Jumlah</th>
+            <th style="border: 1px solid #000; font-weight: bold; background-color: #fef3c7; text-align: center; font-size: 9px;">Hari</th>
+            <th style="border: 1px solid #000; font-weight: bold; background-color: #fef3c7; text-align: center; font-size: 9px;">Jumlah</th>
+            <th style="border: 1px solid #000; font-weight: bold; background-color: #fde68a; text-align: center; font-size: 9px;">Perusahaan</th>
+            <th style="border: 1px solid #000; font-weight: bold; background-color: #fde68a; text-align: center; font-size: 9px;">Karyawan</th>
+            <th style="border: 1px solid #000; font-weight: bold; background-color: #fde68a; text-align: center; font-size: 9px;">Perusahaan</th>
+            <th style="border: 1px solid #000; font-weight: bold; background-color: #fde68a; text-align: center; font-size: 9px;">Karyawan</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach($branches as $branch)
+            {{-- Branch Header --}}
+            <tr>
+                <td colspan="17" style="border: 1px solid #000; font-weight: bold; background-color: #f3f4f6; padding: 5px;">
+                    {{ strtoupper($branch['branch_name']) }}
+                </td>
+            </tr>
+
+            {{-- Employees in this branch --}}
+            @foreach($branch['payrolls'] as $payroll)
+            <tr>
+                <td style="border: 1px solid #000; padding-left: 5px;">
+                    {{ $payroll->employee->name }}
+                </td>
+                <td style="border: 1px solid #000; text-align: center;">
+                    {{ $payroll->employee->outlet->name ?? '-' }}
+                </td>
+                <td style="border: 1px solid #000; text-align: right; padding-right: 5px;">
+                    &#8203;{{ number_format($payroll->base_salary, 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; text-align: right; padding-right: 5px; background-color: #eff6ff; mso-number-format:'\@';">
+                    @if($payroll->tunjangan_jabatan > 0)
+                        &#8203;{{ number_format($payroll->tunjangan_jabatan, 0, ',', '.') }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td style="border: 1px solid #000; text-align: center; background-color: #fefce8;">
+                    @if($payroll->izin_hari > 0)
+                        {{ $payroll->izin_hari }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td style="border: 1px solid #000; text-align: right; padding-right: 5px; background-color: #fefce8; mso-number-format:'\@';">
+                    @if($payroll->izin_jumlah > 0)
+                        &#8203;{{ number_format($payroll->izin_jumlah, 0, ',', '.') }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td style="border: 1px solid #000; text-align: center; background-color: #fefce8;">
+                    @if($payroll->alpha_hari > 0)
+                        {{ $payroll->alpha_hari }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td style="border: 1px solid #000; text-align: right; padding-right: 5px; background-color: #fefce8; mso-number-format:'\@';">
+                    @if($payroll->alpha_jumlah > 0)
+                        &#8203;{{ number_format($payroll->alpha_jumlah, 0, ',', '.') }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td style="border: 1px solid #000; text-align: right; padding-right: 5px; background-color: #fef9c3; mso-number-format:'\@';">
+                    @if($payroll->bpjs_tk_perusahaan > 0)
+                        &#8203;{{ number_format($payroll->bpjs_tk_perusahaan, 0, ',', '.') }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td style="border: 1px solid #000; text-align: right; padding-right: 5px; background-color: #fef9c3; mso-number-format:'\@';">
+                    @if($payroll->bpjs_tk_karyawan > 0)
+                        &#8203;{{ number_format($payroll->bpjs_tk_karyawan, 0, ',', '.') }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td style="border: 1px solid #000; text-align: right; padding-right: 5px; background-color: #fef9c3; mso-number-format:'\@';">
+                    @if($payroll->bpjs_kes_perusahaan > 0)
+                        &#8203;{{ number_format($payroll->bpjs_kes_perusahaan, 0, ',', '.') }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td style="border: 1px solid #000; text-align: right; padding-right: 5px; background-color: #fef9c3; mso-number-format:'\@';">
+                    @if($payroll->bpjs_kes_karyawan > 0)
+                        &#8203;{{ number_format($payroll->bpjs_kes_karyawan, 0, ',', '.') }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td style="border: 1px solid #000; text-align: right; padding-right: 5px; font-weight: bold; background-color: #d1fae5;">
+                    &#8203;{{ number_format($payroll->gaji_plus_bpjs, 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; text-align: right; padding-right: 5px; font-weight: bold; background-color: #bbf7d0; mso-number-format:'\@';">
+                    &#8203;{{ number_format($payroll->thp, 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; text-align: right; padding-right: 5px; background-color: #fde68a; mso-number-format:'\@';">
+                    @if($payroll->infaq > 0)
+                        &#8203;{{ number_format($payroll->infaq, 0, ',', '.') }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td style="border: 1px solid #000; text-align: right; padding-right: 5px; background-color: #fee2e2; mso-number-format:'\@';">
+                    @if($payroll->sdi > 0)
+                        &#8203;{{ number_format($payroll->sdi, 0, ',', '.') }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td style="border: 1px solid #000; text-align: right; padding-right: 5px; background-color: #d1fae5; mso-number-format:'\@';">
+                    &#8203;{{ number_format($payroll->realPayroll, 0, ',', '.') }}
+                </td>
+            </tr>
+            @endforeach
+
+            {{-- Subtotal per Branch --}}            
+            <tr>
+                <td colspan="2" style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 10px; background-color: #e5e7eb;">
+                    SUBTOTAL ({{ $branch['subtotal']['count'] }} karyawan):
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #e5e7eb;">
+                    &#8203;{{ number_format($branch['subtotal']['total_gaji'], 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #e5e7eb; mso-number-format:'\@';">
+                    &#8203;{{ number_format($branch['subtotal']['total_tunjangan_jabatan'], 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: center; background-color: #fef9c3;">
+                    {{ $branch['subtotal']['total_izin_hari'] ?: '-' }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #fef9c3; mso-number-format:'\@';">
+                    &#8203;{{ number_format($branch['subtotal']['total_izin_jumlah'], 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: center; background-color: #fef9c3;">
+                    {{ $branch['subtotal']['total_alpha_hari'] ?: '-' }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #fef9c3; mso-number-format:'\@';">
+                    &#8203;{{ number_format($branch['subtotal']['total_alpha_jumlah'], 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #fde68a; mso-number-format:'\@';">
+                    &#8203;{{ number_format($branch['subtotal']['total_bpjs_tk_perusahaan'], 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #fde68a; mso-number-format:'\@';">
+                    &#8203;{{ number_format($branch['subtotal']['total_bpjs_tk_karyawan'], 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #fde68a; mso-number-format:'\@';">
+                    &#8203;{{ number_format($branch['subtotal']['total_bpjs_kes_perusahaan'], 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #fde68a; mso-number-format:'\@';">
+                    &#8203;{{ number_format($branch['subtotal']['total_bpjs_kes_karyawan'], 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #a7f3d0;">
+                    &#8203;{{ number_format($branch['subtotal']['total_gaji_plus_bpjs'], 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #86efac; mso-number-format:'\@';">
+                    &#8203;{{ number_format($branch['subtotal']['total_thp'], 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #fde68a; mso-number-format:'\@';">
+                    &#8203;{{ number_format($branch['subtotal']['total_infaq'], 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #fca5a5; mso-number-format:'\@';">
+                    &#8203;{{ number_format($branch['subtotal']['total_sdi'], 0, ',', '.') }}
+                </td>
+                <td style="border: 1px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #a7f3d0; mso-number-format:'\@';">
+                    &#8203;{{ number_format($branch['subtotal']['total_payroll'], 0, ',', '.') }}
+                </td>
+            </tr>
+
+            {{-- Spacing --}}
+            <tr><td colspan="17" style="height: 5px;"></td></tr>
+        @endforeach
+
+        {{-- Grand Total --}}
+        <tr>
+            <td colspan="2" style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 10px; background-color: #6366f1; color: white;">
+                TOTAL ({{ $grandTotal['count'] }} karyawan):
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #6366f1; color: white;">
+                &#8203;{{ number_format($grandTotal['total_gaji'], 0, ',', '.') }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #6366f1; color: white; mso-number-format:'\@';">
+                &#8203;{{ number_format($grandTotal['total_tunjangan_jabatan'], 0, ',', '.') }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: center; background-color: #d97706; color: white;">
+                {{ $grandTotal['total_izin_hari'] ?: '-' }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #d97706; color: white; mso-number-format:'\@';">
+                &#8203;{{ number_format($grandTotal['total_izin_jumlah'], 0, ',', '.') }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: center; background-color: #d97706; color: white;">
+                {{ $grandTotal['total_alpha_hari'] ?: '-' }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #d97706; color: white; mso-number-format:'\@';">
+                &#8203;{{ number_format($grandTotal['total_alpha_jumlah'], 0, ',', '.') }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #f59e0b; color: white; mso-number-format:'\@';">
+                &#8203;{{ number_format($grandTotal['total_bpjs_tk_perusahaan'], 0, ',', '.') }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #f59e0b; color: white; mso-number-format:'\@';">
+                &#8203;{{ number_format($grandTotal['total_bpjs_tk_karyawan'], 0, ',', '.') }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #eab308; color: white; mso-number-format:'\@';">
+                &#8203;{{ number_format($grandTotal['total_bpjs_kes_perusahaan'], 0, ',', '.') }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #eab308; color: white; mso-number-format:'\@';">
+                &#8203;{{ number_format($grandTotal['total_bpjs_kes_karyawan'], 0, ',', '.') }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #10b981; color: white;">
+                &#8203;{{ number_format($grandTotal['total_gaji_plus_bpjs'], 0, ',', '.') }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #22c55e; color: white; mso-number-format:'\@';">
+                &#8203;{{ number_format($grandTotal['total_thp'], 0, ',', '.') }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #eab308; color: white; mso-number-format:'\@';">
+                &#8203;{{ number_format($grandTotal['total_infaq'], 0, ',', '.') }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #ef4444; color: white; mso-number-format:'\@';">
+                &#8203;{{ number_format($grandTotal['total_sdi'], 0, ',', '.') }}
+            </td>
+            <td style="border: 2px solid #000; font-weight: bold; text-align: right; padding-right: 5px; background-color: #10b981; color: white; mso-number-format:'\@';">
+                &#8203;{{ number_format($grandTotal['total_payroll'], 0, ',', '.') }}
+            </td>
+        </tr>
+    </tbody>
+</table>

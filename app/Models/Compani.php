@@ -1,0 +1,136 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Compani extends Model
+{
+    use HasFactory;
+
+    protected $fillable =
+    [
+        'user_id',
+        'name',
+        'no_telpon',
+        'ktp',
+        'atas_nama',
+        'bank',
+        'no_rek',
+        'company',
+        'max_collectice_leave',
+        'status',
+        'location',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function staffs()
+    {
+        return $this->hasMany(Staff::class);
+    }
+
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
+    }
+
+    public function branches()
+    {
+        return $this->hasMany(Branch::class);
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class);
+    }
+
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
+
+    public function overtimes()
+    {
+        return $this->hasMany(Overtime::class);
+    }
+
+    public function payrolls()
+    {
+        return $this->hasMany(Payroll::class);
+    }
+
+    public function shifts()
+    {
+        return $this->hasMany(Shift::class);
+    }
+
+    public function allows()
+    {
+        return $this->hasMany(Allow::class);
+    }
+
+    public function deducts()
+    {
+        return $this->hasMany(Deduct::class);
+    }
+
+    public function companyPayrollConfig()
+    {
+        return $this->hasOne(CompanyPayrollConfig::class);
+    }
+
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
+    public function positions()
+    {
+        return $this->hasMany(Position::class);
+    }
+
+    public function announcements()
+    {
+        return $this->hasMany(Announcement::class);
+    }
+
+    public function attendanceLogs()
+    {
+        return $this->hasMany(AttendanceLog::class);
+    }
+
+    public function globalTerRates()
+    {
+        return $this->hasMany(GlobalTerRate::class);
+    }
+
+    public function globalPtkps()
+    {
+        return $this->hasMany(GlobalPtkp::class);
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
+     public function leaveQuotas()
+    {
+        return $this->hasMany(LeaveQuota::class);
+    }
+    
+    public function collectiveLeaves()
+    {
+        return $this->hasMany(CollectiveLeave::class);
+    }
+}

@@ -1,0 +1,148 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\ActivityLog;
+use App\Models\Deduct;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+
+class DeductController extends Controller
+{
+    public function index()
+    {
+        if (! Auth::check()) {
+            return redirect('/');
+        }
+
+        $userCompany = Auth::user()->compani;
+
+        if (! $userCompany) {
+            return redirect()->route('addcompany');
+        }
+
+        $status = $userCompany->status;
+
+        if ($status !== 'Settlement') {
+            return redirect()->route('login');
+        }
+
+        $cacheKey = "deductions_{$userCompany->id}";
+
+        $deductions =Cache::tags(['deductions', "company_{$userCompany->id}"])
+            ->remember($cacheKey, 180, function () use ($userCompany) {
+            return $userCompany->deducts()->get();
+        });
+
+        return view('deduction', compact('deductions'));
+    }
+
+    public function store(Request $request)
+    {
+        $userCompany = auth()->user()->compani;
+
+        $data = $request->validate([
+            'name' => 'required',
+            'type' => 'required',
+        ]);
+
+        $deduct = Deduct::create([
+            'name' => $data['name'],
+            'type' => $data['type'],
+            'compani_id' => $userCompany->id,
+        ]);
+
+        $this->logActivity(
+            'Create Allowance',
+            "Menambahkan deduction '{$deduct->name}'",
+            $userCompany->id
+        );
+
+        $this->clearCache($userCompany->id);
+
+        return redirect(route('deduction'))->with('success', 'Deduction successfully created!');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $userCompany = auth()->user()->compani;
+
+        $data = $request->validate([
+            'name' => 'required',
+            'type' => 'required',
+        ]);
+
+        $deduct = Deduct::where('id', $id)
+            ->where('compani_id', $userCompany->id)
+            ->firstOrFail();
+
+        $oldContent = $deduct->name;
+
+        $deduct->update([
+            'name' => $data['name'],
+            'type' => $data['type'],
+        ]);
+
+        $this->logActivity(
+            'Update Deduction',
+            "Mengubah deduction '{$oldContent}' menjadi '{$deduct->name}'",
+            $userCompany->id
+        );
+
+        $this->clearCache($userCompany->id);
+
+        return redirect(route('deduction'))->with('success', 'Deduction successfully updated!');
+    }
+
+    public function destroy($id)
+    {
+        $userCompany = auth()->user()->compani;
+
+        $deduction = Deduct::where('id', $id)
+            ->where('compani_id', $userCompany->id)
+            ->firstOrFail();
+
+        $oldContent = $deduction->name;
+
+        $deduction->delete();
+
+        $this->logActivity(
+            'Delete Deduction',
+            "Menghapus deduction '{$oldContent}'",
+            $userCompany->id
+        );
+
+        $this->clearCache($userCompany->id);
+
+        return redirect(route('deduction'))->with('success', 'Deduction successfully deleted!');
+    }
+
+    private function clearCache($companyId)
+    {
+        Cache::tags(["company_{$companyId}", 'deductions'])->flush();
+    }
+
+    private function logActivity($type, $description, $companyId)
+    {
+        $userId  = null;
+        $staffId = null;
+
+        if (Auth::guard('staff')->check()) {
+            $staffId = Auth::guard('staff')->id();
+        } elseif (Auth::check()) {
+            $userId = Auth::id();
+        }
+
+        ActivityLog::create([
+            'user_id'       => $userId,
+            'staff_id'      => $staffId,
+            'compani_id'    => $companyId,
+            'activity_type' => $type,
+            'description'   => $description,
+            'created_at'    => now(),
+        ]);
+
+        Cache::forget("activities_{$companyId}");
+    }
+}

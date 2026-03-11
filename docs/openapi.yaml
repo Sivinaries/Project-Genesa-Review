@@ -1,0 +1,1564 @@
+openapi: 3.0.0
+info:
+  title: GENESA Mobile API
+  description: |
+    API untuk aplikasi mobile ESS (Employee Self Service) GENESA HR System.
+    
+    ## Authentication
+    - **Login**: POST `/v1/login` untuk mendapatkan token
+    - **Token**: Gunakan `Authorization: Bearer <token>` header untuk semua endpoint yang memerlukan autentikasi
+    - **Token Type**: Sanctum API Token
+    
+    ## Response Format
+    Semua response mengikuti format standar:
+    ```json
+    {
+      "success": true/false,
+      "data": {...},
+      "message": "string"
+    }
+    ```
+    
+    ## Error Codes
+    - 200: Success
+    - 201: Created
+    - 400: Bad Request
+    - 401: Unauthorized
+    - 404: Not Found
+    - 422: Unprocessable Entity (Validation Error)
+    - 500: Server Error
+  version: 1.0.0
+  contact:
+    name: GENESA Support
+    email: support@genesa.hries.id
+
+servers:
+  - url: https://genesa.hries.id/api
+    description: Production Server
+  - url: http://localhost/api
+    description: Local Development
+
+paths:
+  /fingerspot/webhook:
+    post:
+      tags:
+        - Webhook
+      summary: Fingerspot Attendance Webhook
+      description: Webhook untuk menerima data attendance dari Fingerspot biometric system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employee_id:
+                  type: integer
+                  description: ID Karyawan
+                fingerprint_id:
+                  type: string
+                  description: ID Fingerprint dari device
+                time_in:
+                  type: string
+                  format: date-time
+                  description: Waktu checkin
+                time_out:
+                  type: string
+                  format: date-time
+                  description: Waktu checkout
+                device_id:
+                  type: string
+                  description: ID Device Fingerspot
+      responses:
+        '200':
+          description: Webhook berhasil diterima
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /v1/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login
+      description: Login dengan email dan password untuk mendapatkan akses token
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: john.doe@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+      responses:
+        '200':
+          description: Login berhasil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          token:
+                            type: string
+                            description: API Token untuk authenticated requests
+                            example: "1|AbCdEfGhIjKlMnOpQrStUvWxYz1234567890"
+                          employee:
+                            $ref: '#/components/schemas/Employee'
+        '401':
+          description: Email atau password salah
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout
+      description: Logout dan invalidate token
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logout berhasil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized - Token tidak valid atau expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/home:
+    get:
+      tags:
+        - Home & Profile
+      summary: Get Home Dashboard
+      description: Mendapatkan data dashboard home dengan summary informasi karyawan, attendance, dan announcements
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: month
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+          description: Bulan untuk filter attendance (default bulan saat ini)
+        - in: query
+          name: year
+          schema:
+            type: integer
+          description: Tahun untuk filter attendance (default tahun saat ini)
+      responses:
+        '200':
+          description: Home data berhasil diambil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          employee:
+                            $ref: '#/components/schemas/Employee'
+                          announcements:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                title:
+                                  type: string
+                                content:
+                                  type: string
+                                created_at:
+                                  type: string
+                                  format: date-time
+                          attendance:
+                            type: object
+                            properties:
+                              present:
+                                type: integer
+                              absent:
+                                type: integer
+                              sick:
+                                type: integer
+                              permission:
+                                type: integer
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /v1/profile:
+    get:
+      tags:
+        - Home & Profile
+      summary: Get Employee Profile
+      description: Mendapatkan detail profil lengkap karyawan
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Profile data berhasil diambil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/EmployeeDetail'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /v1/schedule:
+    get:
+      tags:
+        - Schedule
+      summary: Get Employee Schedule
+      description: Mendapatkan jadwal kerja karyawan
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: month
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+          description: Bulan jadwal (default bulan saat ini)
+        - in: query
+          name: year
+          schema:
+            type: integer
+          description: Tahun jadwal (default tahun saat ini)
+      responses:
+        '200':
+          description: Schedule data berhasil diambil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            date:
+                              type: string
+                              format: date
+                            shift:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                name:
+                                  type: string
+                                start_time:
+                                  type: string
+                                  format: time
+                                end_time:
+                                  type: string
+                                  format: time
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /v1/attendance:
+    get:
+      tags:
+        - Attendance
+      summary: Get Attendance Records
+      description: Mendapatkan record absensi dengan filter bulan dan tahun
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: month
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+          description: Bulan absensi (default bulan saat ini)
+        - in: query
+          name: year
+          schema:
+            type: integer
+          description: Tahun absensi (default tahun saat ini)
+        - in: query
+          name: per_page
+          schema:
+            type: integer
+            default: 31
+          description: Jumlah record per halaman
+      responses:
+        '200':
+          description: Attendance data berhasil diambil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            date:
+                              type: string
+                              format: date
+                            status:
+                              type: string
+                              enum: [present, absent, sick, permission, holiday]
+                            check_in:
+                              type: string
+                              format: time
+                              nullable: true
+                            check_out:
+                              type: string
+                              format: time
+                              nullable: true
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /v1/leave:
+    get:
+      tags:
+        - Leave & Permission
+      summary: Get Leave List
+      description: Mendapatkan daftar pengajuan cuti/izin dengan filter status
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [pending, approved, rejected]
+          description: Filter berdasarkan status pengajuan
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum: [izin, sakit, cuti, meninggalkan_pekerjaan, tukar_shift]
+          description: Filter berdasarkan tipe cuti/izin
+      responses:
+        '200':
+          description: Leave list berhasil diambil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Leave'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    post:
+      tags:
+        - Leave & Permission
+      summary: Request Leave/Permission
+      description: Mengajukan cuti atau izin dengan validasi quota untuk cuti
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - start_date
+                - end_date
+                - type
+                - note
+              properties:
+                start_date:
+                  type: string
+                  format: date
+                  example: "2026-03-10"
+                end_date:
+                  type: string
+                  format: date
+                  example: "2026-03-12"
+                type:
+                  type: string
+                  enum: [izin, sakit, cuti, meninggalkan_pekerjaan, tukar_shift, other]
+                  example: cuti
+                note:
+                  type: string
+                  example: "Cuti tahunan"
+      responses:
+        '201':
+          description: Pengajuan cuti berhasil dikirim
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Leave'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          description: Validasi error (misalnya quota cuti habis)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/overtime:
+    get:
+      tags:
+        - Overtime
+      summary: Get Overtime List
+      description: Mendapatkan daftar pengajuan lembur dengan filter status
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [pending, approved, rejected]
+          description: Filter berdasarkan status pengajuan
+      responses:
+        '200':
+          description: Overtime list berhasil diambil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Overtime'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    post:
+      tags:
+        - Overtime
+      summary: Request Overtime
+      description: Mengajukan lembur dengan tanggal dan durasi
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - date
+                - duration
+                - note
+              properties:
+                date:
+                  type: string
+                  format: date
+                  example: "2026-03-10"
+                duration:
+                  type: number
+                  format: float
+                  description: Durasi lembur dalam jam
+                  example: 2.5
+                note:
+                  type: string
+                  example: "Menyelesaikan project urgent"
+      responses:
+        '201':
+          description: Pengajuan lembur berhasil dikirim
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Overtime'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/payroll:
+    get:
+      tags:
+        - Payroll
+      summary: Get Payroll List
+      description: Mendapatkan daftar slip gaji dengan pagination
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Halaman hasil (pagination)
+        - in: query
+          name: per_page
+          schema:
+            type: integer
+            default: 12
+          description: Jumlah record per halaman
+      responses:
+        '200':
+          description: Payroll list berhasil diambil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            period:
+                              type: string
+                              format: date
+                            gross_salary:
+                              type: number
+                              format: float
+                            net_salary:
+                              type: number
+                              format: float
+                            created_at:
+                              type: string
+                              format: date-time
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /v1/payroll/{id}:
+    get:
+      tags:
+        - Payroll
+      summary: Get Payroll Detail
+      description: Mendapatkan detail slip gaji dengan breakdown komponen
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID Payroll
+      responses:
+        '200':
+          description: Payroll detail berhasil diambil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          period:
+                            type: string
+                            format: date
+                          employee:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              name:
+                                type: string
+                              email:
+                                type: string
+                          salary_components:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                amount:
+                                  type: number
+                                  format: float
+                          deductions:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                amount:
+                                  type: number
+                                  format: float
+                          gross_salary:
+                            type: number
+                            format: float
+                          total_deduction:
+                            type: number
+                            format: float
+                          net_salary:
+                            type: number
+                            format: float
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /v1/note:
+    get:
+      tags:
+        - Notes
+      summary: Get Notes
+      description: Mendapatkan daftar catatan/komitmen kerja
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: type
+          schema:
+            type: string
+          description: Filter berdasarkan tipe catatan
+      responses:
+        '200':
+          description: Notes berhasil diambil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            title:
+                              type: string
+                            content:
+                              type: string
+                            type:
+                              type: string
+                            created_at:
+                              type: string
+                              format: date-time
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /v1/gps-attendance:
+    get:
+      tags:
+        - GPS Attendance
+      summary: Get GPS Attendance Log
+      description: Mendapatkan history GPS attendance dengan location tracking
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: month
+          schema:
+            type: integer
+          description: Filter berdasarkan bulan
+        - in: query
+          name: year
+          schema:
+            type: integer
+          description: Filter berdasarkan tahun
+      responses:
+        '200':
+          description: GPS attendance log berhasil diambil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            date:
+                              type: string
+                              format: date
+                            check_in_time:
+                              type: string
+                              format: time
+                            check_out_time:
+                              type: string
+                              format: time
+                            check_in_location:
+                              type: object
+                              properties:
+                                latitude:
+                                  type: number
+                                  format: float
+                                longitude:
+                                  type: number
+                                  format: float
+                                accuracy:
+                                  type: number
+                                  format: float
+                            check_out_location:
+                              type: object
+                              properties:
+                                latitude:
+                                  type: number
+                                  format: float
+                                longitude:
+                                  type: number
+                                  format: float
+                                accuracy:
+                                  type: number
+                                  format: float
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /v1/gps-attendance/checkin:
+    post:
+      tags:
+        - GPS Attendance
+      summary: GPS Check-in
+      description: Melakukan check-in dengan GPS location dan photo
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - latitude
+                - longitude
+                - accuracy
+              properties:
+                latitude:
+                  type: number
+                  format: float
+                  example: -6.2088
+                longitude:
+                  type: number
+                  format: float
+                  example: 106.8456
+                accuracy:
+                  type: number
+                  format: float
+                  example: 5.5
+                  description: Akurasi GPS dalam meter
+                altitude:
+                  type: number
+                  format: float
+                  description: Ketinggian dalam meter
+                note:
+                  type: string
+                  description: Catatan tambahan untuk check-in
+      responses:
+        '201':
+          description: Check-in berhasil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          time:
+                            type: string
+                            format: date-time
+                          location:
+                            type: object
+                            properties:
+                              latitude:
+                                type: number
+                              longitude:
+                                type: number
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          description: Validation error atau sudah pernah check-in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/gps-attendance/checkout:
+    post:
+      tags:
+        - GPS Attendance
+      summary: GPS Check-out
+      description: Melakukan check-out dengan GPS location
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - latitude
+                - longitude
+                - accuracy
+              properties:
+                latitude:
+                  type: number
+                  format: float
+                  example: -6.2088
+                longitude:
+                  type: number
+                  format: float
+                  example: 106.8456
+                accuracy:
+                  type: number
+                  format: float
+                  example: 5.5
+                altitude:
+                  type: number
+                  format: float
+                note:
+                  type: string
+      responses:
+        '201':
+          description: Check-out berhasil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          time:
+                            type: string
+                            format: date-time
+                          location:
+                            type: object
+                            properties:
+                              latitude:
+                                type: number
+                              longitude:
+                                type: number
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          description: Validation error atau belum check-in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/coordinator/schedule:
+    get:
+      tags:
+        - Coordinator Management
+      summary: Get Coordinator Schedules
+      description: Mendapatkan jadwal karyawan yang dikoordinir dengan filter
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: month
+          schema:
+            type: integer
+          description: Filter berdasarkan bulan
+        - in: query
+          name: year
+          schema:
+            type: integer
+          description: Filter berdasarkan tahun
+        - in: query
+          name: employee_id
+          schema:
+            type: integer
+          description: Filter berdasarkan employee ID
+      responses:
+        '200':
+          description: Schedules berhasil diambil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            employee:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                name:
+                                  type: string
+                            date:
+                              type: string
+                              format: date
+                            shift:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                name:
+                                  type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    post:
+      tags:
+        - Coordinator Management
+      summary: Create Schedule
+      description: Membuat jadwal baru untuk karyawan (hanya untuk koordinator)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - employee_id
+                - date
+                - shift_id
+              properties:
+                employee_id:
+                  type: integer
+                date:
+                  type: string
+                  format: date
+                shift_id:
+                  type: integer
+                note:
+                  type: string
+      responses:
+        '201':
+          description: Jadwal berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden - User bukan koordinator
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/coordinator/schedule/{id}:
+    put:
+      tags:
+        - Coordinator Management
+      summary: Update Schedule
+      description: Update jadwal yang sudah dibuat
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shift_id:
+                  type: integer
+                date:
+                  type: string
+                  format: date
+                note:
+                  type: string
+      responses:
+        '200':
+          description: Jadwal berhasil diupdate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    delete:
+      tags:
+        - Coordinator Management
+      summary: Delete Schedule
+      description: Menghapus jadwal
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Jadwal berhasil dihapus
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /v1/coordinator/leave:
+    get:
+      tags:
+        - Coordinator Management
+      summary: Get Coordinator Leaves
+      description: Mendapatkan list cuti/izin karyawan yang dikoordinir
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [pending, approved, rejected]
+        - in: query
+          name: month
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Leaves berhasil diambil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            employee:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                name:
+                                  type: string
+                            start_date:
+                              type: string
+                              format: date
+                            end_date:
+                              type: string
+                              format: date
+                            type:
+                              type: string
+                            status:
+                              type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    post:
+      tags:
+        - Coordinator Management
+      summary: Create Leave for Employee
+      description: Membuat pengajuan cuti untuk karyawan
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - employee_id
+                - start_date
+                - end_date
+                - type
+                - note
+              properties:
+                employee_id:
+                  type: integer
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                type:
+                  type: string
+                  enum: [izin, sakit, cuti, meninggalkan_pekerjaan, tukar_shift]
+                note:
+                  type: string
+      responses:
+        '201':
+          description: Pengajuan cuti berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /v1/coordinator/leave/{id}:
+    put:
+      tags:
+        - Coordinator Management
+      summary: Update Leave
+      description: Update pengajuan cuti
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, approved, rejected]
+                note:
+                  type: string
+      responses:
+        '200':
+          description: Pengajuan cuti berhasil diupdate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /v1/coordinator/overtime:
+    get:
+      tags:
+        - Coordinator Management
+      summary: Get Coordinator Overtimes
+      description: Mendapatkan list lembur karyawan yang dikoordinir
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [pending, approved, rejected]
+        - in: query
+          name: month
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Overtimes berhasil diambil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Overtime'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    post:
+      tags:
+        - Coordinator Management
+      summary: Create Overtime for Employee
+      description: Membuat pengajuan lembur untuk karyawan
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - employee_id
+                - date
+                - duration
+                - note
+              properties:
+                employee_id:
+                  type: integer
+                date:
+                  type: string
+                  format: date
+                duration:
+                  type: number
+                  format: float
+                note:
+                  type: string
+      responses:
+        '201':
+          description: Pengajuan lembur berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    put:
+      tags:
+        - Coordinator Management
+      summary: Batch Update Overtimes
+      description: Update multiple pengajuan lembur sekaligus
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - overtime_ids
+                - status
+              properties:
+                overtime_ids:
+                  type: array
+                  items:
+                    type: integer
+                status:
+                  type: string
+                  enum: [pending, approved, rejected]
+                note:
+                  type: string
+      responses:
+        '200':
+          description: Batch update berhasil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    delete:
+      tags:
+        - Coordinator Management
+      summary: Batch Delete Overtimes
+      description: Menghapus multiple pengajuan lembur sekaligus
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - overtime_ids
+              properties:
+                overtime_ids:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: Batch delete berhasil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Sanctum API Token dari login endpoint
+
+  schemas:
+    SuccessResponse:
+      type: object
+      required:
+        - success
+        - data
+        - message
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          nullable: true
+        message:
+          type: string
+          example: "Request berhasil"
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - data
+        - message
+      properties:
+        success:
+          type: boolean
+          example: false
+        data:
+          type: object
+          nullable: true
+        message:
+          type: string
+          example: "Error message"
+
+    Employee:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        position:
+          type: string
+        is_head:
+          type: boolean
+        branch:
+          type: string
+        outlet:
+          type: string
+        join_date:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [active, inactive, resigned]
+        payroll_method:
+          type: string
+
+    EmployeeDetail:
+      allOf:
+        - $ref: '#/components/schemas/Employee'
+        - type: object
+          properties:
+            identity_number:
+              type: string
+            identity_type:
+              type: string
+            address:
+              type: string
+            birthdate:
+              type: string
+              format: date
+            gender:
+              type: string
+              enum: [male, female]
+            marital_status:
+              type: string
+            bank_account:
+              type: string
+            salary:
+              type: number
+              format: float
+
+    Leave:
+      type: object
+      properties:
+        id:
+          type: integer
+        employee_id:
+          type: integer
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        type:
+          type: string
+          enum: [izin, sakit, cuti, meninggalkan_pekerjaan, tukar_shift, other]
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        note:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        approved_by:
+          type: integer
+          nullable: true
+        approved_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    Overtime:
+      type: object
+      properties:
+        id:
+          type: integer
+        employee_id:
+          type: integer
+        date:
+          type: string
+          format: date
+        duration:
+          type: number
+          format: float
+          description: Durasi dalam jam
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        note:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        approved_by:
+          type: integer
+          nullable: true
+        approved_at:
+          type: string
+          format: date-time
+          nullable: true
+
+  responses:
+    UnauthorizedError:
+      description: Token not valid atau expired
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    ValidationError:
+      description: Request validation error
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ErrorResponse'
+              - type: object
+                properties:
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+
+tags:
+  - name: Authentication
+    description: Autentikasi dan session management
+  - name: Home & Profile
+    description: Dashboard home dan profil karyawan
+  - name: Schedule
+    description: Jadwal kerja karyawan
+  - name: Attendance
+    description: Record absensi karyawan
+  - name: Leave & Permission
+    description: Pengajuan cuti dan izin
+  - name: Overtime
+    description: Pengajuan lembur
+  - name: Payroll
+    description: Slip gaji dan detail komponen salary
+  - name: Notes
+    description: Catatan dan komitmen kerja
+  - name: GPS Attendance
+    description: GPS tracking untuk check-in/check-out
+  - name: Coordinator Management
+    description: Manajemen jadwal, cuti, dan lembur karyawan untuk koordinator
+  - name: Webhook
+    description: External webhooks dari sistem pihak ketiga
