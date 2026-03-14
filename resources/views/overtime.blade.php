@@ -45,10 +45,7 @@
                     </h1>
                     <p class="text-sm text-gray-500">Data lembur dikelompokkan berdasarkan jadwal.</p>
                 </div>
-                <button id="addBtn"
-                    class="px-6 py-3 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition font-semibold flex items-center gap-2">
-                    <i class="fas fa-plus"></i> Tambah Lembur
-                </button>
+                <x-button id="addBtn" size="lg" variant="purple" icon="plus">Tambah</x-button>
             </div>
 
             <!-- Tabs -->
@@ -170,9 +167,9 @@
                                                             'employee_id' => $item->employee_id,
                                                         ]) }}"
                                                             target="_blank"
-                                                            class="w-6 h-6 flex items-center justify-center bg-purple-100 text-purple-600 rounded hover:bg-purple-200 transition"
+                                                            class="w-10 h-10 flex items-center justify-center bg-purple-100 text-purple-600 rounded hover:bg-purple-200 transition"
                                                             title="Export PDF {{ $item->employee->name }}">
-                                                            <i class="fas fa-print"></i>
+                                                            <i class="fas fa-print text-lg"></i>
                                                         </a>
                                                         @if ($item->status == 'pending')
                                                             <span
@@ -192,13 +189,13 @@
                                                                         placeholder="0" required>
                                                                 </div>
                                                                 <button type="button"
-                                                                    class="btn-approve bg-green-100 text-green-600 w-7 h-7 rounded hover:bg-green-200"
+                                                                    class="btn-approve bg-green-100 text-green-600 w-10 h-10 rounded hover:bg-green-200"
                                                                     title="Setujui"><i
-                                                                        class="fas fa-check text-xs"></i></button>
+                                                                        class="fas fa-check text-lg"></i></button>
                                                                 <button type="button"
-                                                                    class="btn-reject bg-red-100 text-red-600 w-7 h-7 rounded hover:bg-red-200"
+                                                                    class="btn-reject bg-red-100 text-red-600 w-10 h-10 rounded hover:bg-red-200"
                                                                     title="Tolak"><i
-                                                                        class="fas fa-times text-xs"></i></button>
+                                                                        class="fas fa-times text-lg"></i></button>
                                                             </form>
                                                         @else
                                                             @php
@@ -222,8 +219,8 @@
                                     </td>
 
                                     <!-- Aksi Group -->
-                                    <td class="p-4 text-center">
-                                        <div class="flex h-12 gap-2">
+                                    <td class="p-4">
+                                        <div class="flex justify-center items-center gap-2">
 
                                             <!-- Export PDF -->
                                             <a href="{{ route('printovertimereport', [
@@ -233,25 +230,25 @@
                                                 'branch_id' => $header->employee->branch_id ?? null,
                                             ]) }}"
                                                 target="_blank"
-                                                class="w-full py-1.5 bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition text-xs font-bold flex items-center justify-center gap-1">
-                                                <i class="fas fa-print"></i> PDF
+                                                class="w-10 h-10 flex items-center justify-center bg-purple-500 text-white rounded-lg shadow hover:bg-purple-600 hover:scale-105 transition">
+                                                <i class="fas fa-print text-lg"></i>
                                             </a>
 
                                             <!-- Edit -->
                                             <button
-                                                class="batchEditBtn w-full py-1.5 bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition text-xs font-bold flex items-center justify-center gap-1"
+                                                class="batchEditBtn w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 hover:scale-105 transition"
                                                 data-date="{{ $header->overtime_date }}"
                                                 data-start="{{ $header->start_time }}"
                                                 data-end="{{ $header->end_time }}" data-note="{{ $header->note }}"
                                                 data-employees="{{ $groupEmpIds }}"
                                                 data-branch="{{ $groupBranchId }}"
                                                 data-outlet="{{ $groupOutletId }}">
-                                                <i class="fas fa-edit"></i> Edit
+                                                <i class="fas fa-edit text-lg"></i>
                                             </button>
 
                                             <!-- Delete -->
                                             <form action="{{ route('delovertimebatch') }}" method="POST"
-                                                class="w-full">
+                                                class="inline">
                                                 @csrf @method('DELETE')
                                                 <input type="hidden" name="date"
                                                     value="{{ $header->overtime_date }}">
@@ -260,8 +257,8 @@
                                                 <input type="hidden" name="end"
                                                     value="{{ $header->end_time }}">
                                                 <button type="button"
-                                                    class="batchDeleteBtn w-full py-1.5 h-12 bg-red-100 text-red-700 rounded hover:bg-red-200 transition text-xs font-bold flex items-center justify-center gap-1">
-                                                    <i class="fas fa-trash"></i> Hapus
+                                                    class="batchDeleteBtn w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition">
+                                                    <i class="fas fa-trash text-lg"></i>
                                                 </button>
                                             </form>
 
@@ -383,9 +380,9 @@
                                                             'employee_id' => $item->employee_id,
                                                         ]) }}"
                                                             target="_blank"
-                                                            class="w-6 h-6 flex items-center justify-center bg-purple-100 text-purple-600 rounded hover:bg-purple-200 transition"
+                                                            class="w-10 h-10 flex items-center justify-center bg-purple-100 text-purple-600 rounded hover:bg-purple-200 transition"
                                                             title="Export PDF {{ $item->employee->name }}">
-                                                            <i class="fas fa-print"></i>
+                                                            <i class="fas fa-print text-lg"></i>
                                                         </a>
                                                         @php
                                                             $statusColor = match ($item->status) {
@@ -406,7 +403,8 @@
                                     </td>
 
                                     <!-- Aksi Group -->
-                                    <td class="p-4 text-center">
+                                    <td class="p-4">
+                                        <div class="flex justify-center items-center gap-2">
                                         <a href="{{ route('printovertimereport', [
                                             'date' => $header->overtime_date,
                                             'start_time' => $header->start_time,
@@ -414,9 +412,10 @@
                                             'branch_id' => $header->employee->branch_id ?? null,
                                         ]) }}"
                                             target="_blank"
-                                            class="w-full py-2 px-3 bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition text-xs font-bold flex items-center justify-center gap-1">
-                                            <i class="fas fa-print"></i> PDF
+                                            class="w-10 h-10 flex items-center justify-center bg-purple-500 text-white rounded-lg shadow hover:bg-purple-600 hover:scale-105 transition">
+                                            <i class="fas fa-print text-lg"></i>
                                         </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -434,7 +433,7 @@
             <button id="closeAddModal" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 transition"><i
                     class="fas fa-times text-xl"></i></button>
             <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2"><i
-                    class="fas fa-plus-circle text-purple-600"></i> Tambah Lembur</h2>
+                    class="fas fa-plus-circle text-purple-600"></i> Tambah</h2>
             <form id="addForm" method="post" action="{{ route('postovertime') }}" class="space-y-5">
                 @csrf @method('post')
 
@@ -534,8 +533,7 @@
                         class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-purple-500" rows="2"
                         placeholder="Masukkan detail target atau catatan..."></textarea>
                 </div>
-                <button type="submit"
-                    class="w-full py-3 bg-purple-600 text-white font-bold rounded-lg shadow-md hover:bg-purple-700 transition">Simpan</button>
+                <x-button type="submit" variant="primary" icon="save" class="w-full bg-slate-700 hover:bg-slate-800 justify-center">Simpan</x-button>
             </form>
         </div>
     </div>
@@ -548,7 +546,7 @@
                 class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 transition"><i
                     class="fas fa-times text-xl"></i></button>
             <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2"><i
-                    class="fas fa-edit text-blue-600"></i> Edit Kelompok Lembur</h2>
+                    class="fas fa-edit text-blue-600"></i> Edit</h2>
 
             <form id="batchEditForm" method="post" action="{{ route('updateovertimebatch') }}" class="space-y-5">
                 @csrf @method('PUT')
@@ -637,9 +635,7 @@
                         class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-blue-500" rows="2"></textarea>
                 </div>
 
-                <button type="submit"
-                    class="w-full py-3 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition">Simpan
-                    Perubahan</button>
+                <x-button type="submit" variant="primary" icon="save" class="w-full bg-blue-600 hover:bg-blue-700 justify-center">Perbarui</x-button>
             </form>
         </div>
     </div>
@@ -786,15 +782,13 @@
                 e.preventDefault();
                 const form = $(this).closest('form');
                 Swal.fire({
-                    title: 'Hapus Kelompok?',
-                    text: "Seluruh data karyawan pada jadwal ini akan dihapus permanen.",
+                    title: 'Hapus?',
+                    text: "Anda tidak akan dapat mengembalikan ini!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Hapus Semua!'
-                }).then((res) => {
-                    if (res.isConfirmed) form.submit();
-                });
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => { if (result.isConfirmed) form.submit(); });
             });
 
             const beModal = $('#batchEditModal');

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\Staff;
 use App\Models\Employee;
+use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class ProfilSeeder extends Seeder
@@ -14,19 +14,19 @@ class ProfilSeeder extends Seeder
      */
     public function run(): void
     {
-        Staff::firstOrCreate(
-            ['email' => 'staff@genesacorp.com'],
+        User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
             [
-                'name' => 'Staff',
-                'password' => bcrypt('Genesacorp12345'),
+                'name' => 'Admin',
+                'password' => bcrypt('123456'),
             ]
         );
 
-        // User::firstOrCreate(
-        //     ['email' => 'adi@gmail.com'],
+        // Staff::firstOrCreate(
+        //     ['email' => 'staff@genesacorp.com'],
         //     [
-        //         'name' => 'Adi',
-        //         'password' => bcrypt('123456'),
+        //         'name' => 'Staff',
+        //         'password' => bcrypt('Genesacorp12345'),
         //     ]
         // );
 

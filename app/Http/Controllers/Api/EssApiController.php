@@ -441,6 +441,7 @@ class EssApiController extends Controller
         $coordinator = $this->getCoordinatorOrFail($request);
 
         $branchId    = $coordinator->branch_id;
+        
         $userCompany = $coordinator->compani;
 
         $outletId = $request->query('outlet_id');

@@ -253,9 +253,7 @@
                 </div>
 
                 <div class="pt-2">
-                    <button type="submit"
-                        class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-lg shadow hover:bg-indigo-700 transition">Save
-                        Status</button>
+                    <x-button type="submit" class="w-full">Save Status</x-button>
                 </div>
             </form>
         </div>
@@ -301,9 +299,7 @@
                 </div>
 
                 <div class="pt-2">
-                    <button type="submit"
-                        class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-lg shadow hover:bg-indigo-700 transition">Save
-                        Rate</button>
+                    <x-button type="submit" class="w-full">Save Rate</x-button>
                 </div>
             </form>
         </div>

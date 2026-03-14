@@ -28,9 +28,7 @@
                         <i class="fas fa-file-invoice-dollar text-rose-600"></i> Master Potongan</h1>
                     <p class="text-sm text-gray-500">Tentukan jenis potongan untuk karyawan</p>
                 </div>
-                <button id="addBtn" class="px-6 py-3 bg-rose-500 text-white rounded-lg shadow-md hover:bg-rose-600 transition font-semibold flex items-center gap-2">
-                    <i class="fas fa-plus"></i> Tambah Potongan
-                </button>
+                <x-button id="addBtn" size="lg" variant="rose" icon="plus">Tambah</x-button>
             </div>
 
             <!-- Table -->
@@ -70,7 +68,7 @@
 
                                             <form method="post" action="{{ route('deldeduction', $item->id) }}" class="inline deleteForm">
                                                 @csrf @method('delete')
-                                                <button type="button" class="delete-confirm w-9 h-9 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition" title="Delete">
+                                                <button type="button" class="delete-confirm w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition" title="Delete">
                                                     <i class="fas fa-trash text-lg"></i>
                                                 </button>
                                             </form>
@@ -90,7 +88,7 @@
         <div class="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl relative">
             <button id="closeAddModal" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 transition"><i class="fas fa-times text-xl"></i></button>
             <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-                <i class="fas fa-minus-circle text-rose-500"></i> Tambah Potongan
+                <i class="fas fa-minus-circle text-rose-500"></i> Tambah
             </h2>
 
             <form action="{{ route('postdeduction') }}" method="POST" class="space-y-5">
@@ -106,7 +104,7 @@
                         <option value="one_time">ONE TIME (Sekali Saja)</option>
                     </select>
                 </div>
-                <button type="submit" class="w-full py-3 bg-rose-500 text-white font-bold rounded-lg shadow-md hover:bg-rose-600 transition">Simpan Potongan</button>
+                <x-button type="submit" variant="primary" icon="save" class="w-full bg-slate-700 hover:bg-slate-800 justify-center">Simpan</x-button>
             </form>
         </div>
     </div>
@@ -116,7 +114,7 @@
         <div class="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl relative">
             <button id="closeEditModal" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 transition"><i class="fas fa-times text-xl"></i></button>
             <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-                <i class="fas fa-edit text-blue-600"></i> Edit Potongan
+                <i class="fas fa-edit text-blue-600"></i> Edit
             </h2>
 
             <form id="editForm" method="POST" class="space-y-5">
@@ -132,7 +130,7 @@
                         <option value="one_time">ONE TIME</option>
                     </select>
                 </div>
-                <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition">Update Potongan</button>
+                <x-button type="submit" variant="primary" icon="save" class="w-full bg-blue-600 hover:bg-blue-700 justify-center">Perbarui</x-button>
             </form>
         </div>
     </div>
@@ -157,15 +155,17 @@
             });
             $('#closeEditModal').click(() => $('#editModal').addClass('hidden'));
 
+             // Delete Confirm
             $(document).on('click', '.delete-confirm', function(e) {
                 e.preventDefault();
                 const form = $(this).closest('form');
                 Swal.fire({
-                    title: 'Delete Deduction?',
+                    title: 'Hapus?',
+                    text: "Anda tidak akan dapat mengembalikan ini!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonText: 'Ya, hapus!'
                 }).then((result) => { if (result.isConfirmed) form.submit(); });
             });
         });

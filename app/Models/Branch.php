@@ -10,16 +10,16 @@ class Branch extends Model
     use HasFactory;
 
     protected $fillable =
-    [
-        'compani_id',
-        'name',
-        'address',
-        'latitude',
-        'longitude', 
-        'gps_radius',
-        'phone',
-        'category',
-    ];
+        [
+            'compani_id',
+            'name',
+            'phone',
+            'address',
+            'category',
+            'latitude',
+            'longitude',
+            'gps_radius',
+        ];
 
     public function compani()
     {

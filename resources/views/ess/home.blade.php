@@ -61,10 +61,9 @@
             <!-- LOGOUT BUTTON -->
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button
-                    class="bg-white/90 backdrop-blur-md px-3 py-2 rounded-xl shadow-md hover:bg-white transition-all duration-200 border border-gray-100">
+                <x-button size="sm" variant="secondary" class="bg-white/90 backdrop-blur-md border-gray-100">
                     <i class="material-icons text-black rotate-180 text-[22px]">logout</i>
-                </button>
+                </x-button>
             </form>
 
         </div>

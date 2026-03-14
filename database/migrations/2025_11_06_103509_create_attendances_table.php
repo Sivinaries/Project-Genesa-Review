@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('compani_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('employee_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->string('source')->nullable();
             $table->date('period_start');
             $table->date('period_end');
             $table->integer('total_present')->default(0);

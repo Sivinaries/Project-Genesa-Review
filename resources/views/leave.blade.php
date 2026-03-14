@@ -62,14 +62,8 @@
                     <p class="text-sm text-gray-500 ">Kelola Pengajuan Cuti Karyawan</p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button id="adjustQuotaBtn"
-                        class="px-6 py-3 bg-purple-500 text-white rounded-lg shadow-md hover:bg-purple-600 transition font-semibold flex items-center gap-2">
-                        <i class="fas fa-sliders-h"></i> Atur Kuota
-                    </button>
-                    <button id="addBtn"
-                        class="px-6 py-3 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 transition font-semibold flex items-center gap-2">
-                        <i class="fas fa-plus"></i> Tambah Cuti
-                    </button>
+                    <x-button id="adjustQuotaBtn" size="lg" variant="purple" icon="sliders-h">Atur</x-button>
+                    <x-button id="addBtn" size="lg" variant="yellow" icon="plus">Tambah</x-button>
                 </div>
             </div>
 
@@ -106,13 +100,13 @@
                             @php $no = 1; @endphp
                             @foreach ($leaves as $item)
                                 <tr class="hover:bg-gray-50 transition duration-150">
-                                    <td class="p-4 font-medium">{{ $no++ }}</td>
+                                    <td class="p-4 font-medium text-center">{{ $no++ }}</td>
                                     <td class="p-4 font-medium">
                                         {{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}
                                     </td>
                                     <td class="p-4">
-                                        <div class="font-bold text-gray-900">{{ $item->employee->name ?? 'N/A' }}</div>
-                                        <div class="text-xs text-gray-500">{{ $item->employee->position->name ?? '' }}</div>
+                                        <div class="font-bold text-gray-900 text-base group-hover:text-cyan-600">{{ $item->employee->name ?? 'N/A' }}</div>
+                                        <div class="text-xs text-gray-400">{{ $item->employee->position->name ?? '' }}</div>
                                     </td>
                                     <td class="p-4 text-center text-xs">
                                         <div class="font-semibold text-gray-700">
@@ -163,7 +157,7 @@
                                         @endif
                                     </td>
                                     <td class="p-4">
-                                        <div class="flex justify-end items-center pr-12 gap-1 flex-wrap">
+                                        <div class="flex justify-center items-center gap-2">
                                             {{-- Approve Button --}}
                                             @if($item->status === 'pending')
                                                 <form method="post" action="{{ route('updateleave', ['id' => $item->id]) }}" class="inline">
@@ -175,9 +169,9 @@
                                                     <input type="hidden" name="note" value="{{ $item->note }}">
                                                     <input type="hidden" name="status" value="approved">
                                                     <button type="submit"
-                                                        class="approve-confirm w-9 h-9 flex items-center justify-center bg-green-500 text-white rounded-lg shadow hover:bg-green-600 hover:scale-105 transition"
+                                                        class="approve-confirm w-10 h-10 flex items-center justify-center bg-green-500 text-white rounded-lg shadow hover:bg-green-600 hover:scale-105 transition"
                                                         title="Approve">
-                                                        <i class="fas fa-check"></i>
+                                                        <i class="fas fa-check text-lg"></i>
                                                     </button>
                                                 </form>
 
@@ -191,22 +185,22 @@
                                                     <input type="hidden" name="note" value="{{ $item->note }}">
                                                     <input type="hidden" name="status" value="rejected">
                                                     <button type="button"
-                                                        class="reject-confirm w-9 h-9 flex items-center justify-center bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600 hover:scale-105 transition"
+                                                        class="reject-confirm w-10 h-10 flex items-center justify-center bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600 hover:scale-105 transition"
                                                         title="Reject">
-                                                        <i class="fas fa-times"></i>
+                                                        <i class="fas fa-times text-lg"></i>
                                                     </button>
                                                 </form>
                                             @endif
 
                                             {{-- Edit Button --}}
                                             <button
-                                                class="editBtn w-9 h-9 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 hover:scale-105 transition"
+                                                class="editBtn w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 hover:scale-105 transition"
                                                 data-id="{{ $item->id }}" data-employee="{{ $item->employee_id }}"
                                                 data-start_date="{{ $item->start_date }}"
                                                 data-end_date="{{ $item->end_date }}" data-type="{{ $item->type }}"
                                                 data-note="{{ $item->note }}" data-status="{{ $item->status }}"
                                                 title="Edit">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-edit text-lg"></i>
                                             </button>
 
                                             {{-- Delete Button --}}
@@ -215,9 +209,9 @@
                                                 @csrf
                                                 @method('delete')
                                                 <button type="button"
-                                                    class="delete-confirm w-9 h-9 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition"
+                                                    class="delete-confirm w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition"
                                                     title="Delete">
-                                                    <i class="fas fa-trash"></i>
+                                                    <i class="fas fa-trash text-lg"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -239,7 +233,7 @@
                 <i class="fas fa-times text-xl"></i>
             </button>
             <h2 class="text-2xl font-bold mb-1 text-gray-800 flex items-center gap-2">
-                <i class="fas fa-sliders-h text-purple-500"></i> Atur Kuota Cuti
+                <i class="fas fa-sliders-h text-purple-500"></i> Atur
             </h2>
             <p class="text-sm text-gray-500 mb-6">Kurangi atau tambah jatah cuti mandiri karyawan untuk periode aktif.</p>
 
@@ -343,10 +337,7 @@
                         required></textarea>
                 </div>
 
-                <button type="submit" id="adjustSubmitBtn"
-                    class="w-full py-3 bg-purple-600 text-white font-bold rounded-lg shadow-md hover:bg-purple-700 transition flex justify-center items-center gap-2">
-                    <i class="fas fa-save"></i> Simpan Perubahan Kuota
-                </button>
+                <x-button type="submit" variant="primary" icon="save" class="w-full bg-slate-700 hover:bg-slate-800 justify-center">Simpan</x-button>
             </form>
         </div>
     </div>
@@ -359,7 +350,7 @@
                 <i class="fas fa-times text-xl"></i>
             </button>
             <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-                <i class="fas fa-plane-departure text-yellow-500"></i> Tambah Permintaan Cuti
+                <i class="fas fa-plane-departure text-yellow-500"></i> Tambah 
             </h2>
 
             <form id="addForm" method="post" action="{{ route('postleave') }}" enctype="multipart/form-data"
@@ -449,10 +440,7 @@
                         class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-yellow-500" required></textarea>
                 </div>
 
-                <button type="submit"
-                    class="w-full py-3 bg-yellow-500 text-white font-bold rounded-lg shadow-md hover:bg-yellow-600 transition flex justify-center items-center gap-2">
-                    <i class="fas fa-check"></i> Simpan
-                </button>
+                <x-button type="submit" variant="primary" icon="save" class="w-full bg-slate-700 hover:bg-slate-800 justify-center">Simpan</x-button>
             </form>
         </div>
     </div>
@@ -465,7 +453,7 @@
                 <i class="fas fa-times text-xl"></i>
             </button>
             <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-                <i class="fas fa-edit text-blue-600"></i> Edit Permintaan Cuti
+                <i class="fas fa-edit text-blue-600"></i> Edit 
             </h2>
 
             <form id="editForm" method="post" enctype="multipart/form-data" class="space-y-5">
@@ -550,10 +538,7 @@
                         class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-blue-500" required></textarea>
                 </div>
 
-                <button type="submit"
-                    class="w-full py-3 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition flex justify-center items-center gap-2">
-                    <i class="fas fa-save"></i> Perbarui Permintaan Cuti
-                </button>
+                <x-button type="submit" variant="primary" icon="save" class="w-full bg-blue-600 hover:bg-blue-700 justify-center">Perbarui</x-button>
             </form>
         </div>
     </div>

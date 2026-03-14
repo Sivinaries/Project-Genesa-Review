@@ -48,9 +48,7 @@
                     </h1>
                     <p class="text-sm text-gray-500">Kelola catatan, peringatan, dan penghargaan</p>
                 </div>
-                <button id="addBtn" class="px-6 py-3 bg-teal-600 text-white rounded-lg shadow-md hover:bg-teal-700 transition font-semibold flex items-center gap-2">
-                    <i class="fas fa-plus"></i> Tambah Catatan
-                </button>
+                <x-button id="addBtn" size="lg" variant="primary" class="bg-teal-600 hover:bg-teal-700 shadow-md" icon="plus">Tambah</x-button>
             </div>
 
             <!-- Table Section -->
@@ -76,8 +74,8 @@
                                         {{ \Carbon\Carbon::parse($item->note_date)->format('d M Y') }}
                                     </td>
                                     <td class="p-4">
-                                        <div class="font-bold text-gray-900">{{ $item->employee->name ?? 'N/A' }}</div>
-                                        <div class="text-xs text-gray-500">{{ $item->employee->position->name ?? '' }}</div>
+                                        <div class="font-bold text-gray-900 text-base group-hover:text-cyan-600">{{ $item->employee->name ?? 'N/A' }}</div>
+                                        <div class="text-xs text-gray-400">{{ $item->employee->position->name ?? '' }}</div>
                                     </td>
                                     <td class="p-4">
                                         @php
@@ -99,22 +97,22 @@
                                     <td class="p-4">
                                         <div class="flex justify-center items-center gap-2">
                                             {{-- Edit Button --}}
-                                            <button class="editBtn w-9 h-9 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 hover:scale-105 transition"
+                                            <button class="editBtn w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 hover:scale-105 transition"
                                                 data-id="{{ $item->id }}"
                                                 data-employee="{{ $item->employee_id }}"
                                                 data-date="{{ $item->note_date }}"
                                                 data-type="{{ $item->type }}"
                                                 data-content="{{ $item->content }}"
                                                 title="Edit">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-edit text-lg"></i>
                                             </button>
 
                                             {{-- Delete Button --}}
                                             <form method="post" action="{{ route('delnote', ['id' => $item->id]) }}" class="inline deleteForm">
                                                 @csrf
                                                 @method('delete')
-                                                <button type="button" class="delete-confirm w-9 h-9 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition" title="Delete">
-                                                    <i class="fas fa-trash"></i>
+                                                <button type="button" class="delete-confirm w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition" title="Delete">
+                                                    <i class="fas fa-trash text-lg"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -136,7 +134,7 @@
                 <i class="fas fa-times text-xl"></i>
             </button>
             <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-                <i class="fas fa-sticky-note text-teal-600"></i> Tambah Catatan
+                <i class="fas fa-sticky-note text-teal-600"></i> Tambah
             </h2>
 
             <form id="addForm" method="post" action="{{ route('postnote') }}" enctype="multipart/form-data" class="space-y-5">
@@ -199,9 +197,7 @@
                     <textarea name="content" rows="4" class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-teal-500" placeholder="Write note details here..." required></textarea>
                 </div>
 
-                <button type="submit" class="w-full py-3 bg-teal-600 text-white font-bold rounded-lg shadow-md hover:bg-teal-700 transition flex justify-center items-center gap-2">
-                    <i class="fas fa-check"></i> Simpan Catatan
-                </button>
+                <x-button type="submit" variant="primary" icon="save" class="w-full bg-slate-700 hover:bg-slate-800 justify-center">Simpan</x-button>
             </form>
         </div>
     </div>
@@ -213,7 +209,7 @@
                 <i class="fas fa-times text-xl"></i>
             </button>
             <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-                <i class="fas fa-edit text-blue-600"></i> Edit Catatan
+                <i class="fas fa-edit text-blue-600"></i> Edit
             </h2>
 
             <form id="editForm" method="post" enctype="multipart/form-data" class="space-y-5">
@@ -276,9 +272,7 @@
                     <textarea id="editContent" name="content" rows="4" class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-blue-500" required></textarea>
                 </div>
 
-                <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition flex justify-center items-center gap-2">
-                    <i class="fas fa-save"></i> Perbarui Catatan
-                </button>
+                <x-button type="submit" variant="primary" icon="save" class="w-full bg-blue-600 hover:bg-blue-700 justify-center">Perbarui</x-button>
             </form>
         </div>
     </div>
@@ -354,21 +348,18 @@
                 }
             });
 
-            // Delete confirmation
+            // Delete Confirm
             $(document).on('click', '.delete-confirm', function(e) {
                 e.preventDefault();
                 const form = $(this).closest('form');
                 Swal.fire({
-                    title: 'Delete Note?',
-                    text: "This action cannot be undone!",
+                    title: 'Hapus?',
+                    text: "Anda tidak akan dapat mengembalikan ini!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) form.submit();
-                });
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => { if (result.isConfirmed) form.submit(); });
             });
         });
     </script>

@@ -48,16 +48,10 @@
                             class="rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-blue-500"
                             required>
                     </div>
-                    <button type="submit"
-                        class="px-6 py-2.5 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition font-bold shadow-md">
-                        Muat Data
-                    </button>
+                    <x-button type="submit" class="bg-gray-800 hover:bg-gray-900 shadow-md">Muat Data</x-button>
 
                     @if ($start && $end)
-                        <a href="{{ route('attendance') }}"
-                            class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-bold">
-                            Cancel
-                        </a>
+                        <x-button href="{{ route('attendance') }}" variant="secondary">Cancel</x-button>
                     @endif
                 </form>
             </div>

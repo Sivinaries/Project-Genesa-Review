@@ -59,10 +59,7 @@
             <!-- Header & Add Button -->
             <div class="md:flex justify-between items-center bg-white p-5 rounded-xl shadow-sm border border-gray-100 space-y-2 md:space-y-0">
                 <h1 class="font-semibold text-2xl text-black">Shift</h1>
-                <button id="addBtn"
-                    class="p-2 px-8 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition">
-                    Add
-                </button>
+                <x-button id="addBtn" size="lg" variant="success" icon="plus">Add</x-button>
             </div>
 
             <!-- Table -->
@@ -152,10 +149,7 @@
                 </div>
 
 
-                <button type="submit"
-                    class="bg-green-500 text-white p-4 w-full rounded-lg hover:bg-green-600 shadow transition">
-                    Submit
-                </button>
+                <x-button type="submit" variant="success" class="w-full">Submit</x-button>
             </form>
         </div>
     </div>
@@ -189,10 +183,7 @@
                     <input type="text" id="editAddress" name="address" required
                         class="bg-gray-50 border border-gray-300 text-gray-900 p-2 rounded-lg w-full">
                 </div>
-                <button type="submit"
-                    class="bg-blue-500 text-white p-4 w-full rounded-lg hover:bg-blue-600 shadow transition">
-                    Submit
-                </button>
+                <x-button type="submit" variant="primary" class="w-full">Submit</x-button>
             </form>
         </div>
     </div>

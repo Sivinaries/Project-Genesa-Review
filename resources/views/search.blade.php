@@ -58,10 +58,7 @@
                     </p>
                 </div>
 
-                <a href="{{ route('branch') }}"
-                    class="px-6 py-3 bg-slate-700 text-white rounded-lg shadow-md hover:bg-green-600 transition font-semibold flex items-center gap-2">
-                    <i class="fa fa-external-link"></i> Ke Halaman
-                </a>
+                <x-button href="{{ route('branch') }}" size="lg" variant="primary" class="bg-slate-700 hover:bg-green-600 shadow-md" icon="external-link">Ke Halaman</x-button>
 
             </div>
 
@@ -141,10 +138,7 @@
                     </h1>
                     <p class="text-sm text-gray-500 mt-1">Kelola jabatan dan gaji default</p>
                 </div>
-                <a href="{{ route('position') }}"
-                    class="px-6 py-3 bg-slate-700 text-white rounded-lg shadow-md hover:bg-green-600 transition font-semibold flex items-center gap-2">
-                    <i class="fa fa-external-link"></i> Ke Halaman
-                </a>
+                <x-button href="{{ route('position') }}" size="lg" variant="primary" class="bg-slate-700 hover:bg-green-600 shadow-md" icon="external-link">Ke Halaman</x-button>
             </div>
 
             <!-- Table -->
@@ -197,10 +191,7 @@
                     </h1>
                     <p class="text-sm text-gray-500">Pusat informasi untuk pengumuman internal perusahaan.</p>
                 </div>
-                <a href="{{ route('announcement') }}"
-                    class="px-6 py-3 bg-slate-700 text-white rounded-lg shadow-md hover:bg-green-600 transition font-semibold flex items-center gap-2">
-                    <i class="fa fa-external-link"></i> Ke Halaman
-                </a>
+                <x-button href="{{ route('announcement') }}" size="lg" variant="primary" class="bg-slate-700 hover:bg-green-600 shadow-md" icon="external-link">Ke Halaman</x-button>
             </div>
 
             <!-- Table -->
@@ -243,10 +234,7 @@
                     </h1>
                     <p class="text-sm text-gray-500 ">Kelola anggota tim dan detail mereka</p>
                 </div>
-                <a href="{{ route('employee') }}"
-                    class="px-6 py-3 bg-slate-700 text-white rounded-lg shadow-md hover:bg-green-600 transition font-semibold flex items-center gap-2">
-                    <i class="fa fa-external-link"></i> Ke Halaman
-                </a>
+                <x-button href="{{ route('employee') }}" size="lg" variant="primary" class="bg-slate-700 hover:bg-green-600 shadow-md" icon="external-link">Ke Halaman</x-button>
             </div>
 
             <!-- Table Section -->
@@ -337,10 +325,7 @@
                     </h1>
                     <p class="text-sm text-gray-500">Data lembur dikelompokkan berdasarkan jadwal.</p>
                 </div>
-                <a href="{{ route('overtime') }}"
-                    class="px-6 py-3 bg-slate-700 text-white rounded-lg shadow-md hover:bg-green-600 transition font-semibold flex items-center gap-2">
-                    <i class="fa fa-external-link"></i> Ke Halaman
-                </a>
+                <x-button href="{{ route('overtime') }}" size="lg" variant="primary" class="bg-slate-700 hover:bg-green-600 shadow-md" icon="external-link">Ke Halaman</x-button>
             </div>
 
             <!-- Table -->
@@ -449,10 +434,7 @@
                     </h1>
                     <p class="text-sm text-gray-500 ">Kelola Pengajuan Cuti Karyawan</p>
                 </div>
-                <a href="{{ route('leave') }}"
-                    class="px-6 py-3 bg-slate-700 text-white rounded-lg shadow-md hover:bg-green-600 transition font-semibold flex items-center gap-2">
-                    <i class="fa fa-external-link"></i> Ke Halaman
-                </a>
+                <x-button href="{{ route('leave') }}" size="lg" variant="primary" class="bg-slate-700 hover:bg-green-600 shadow-md" icon="external-link">Ke Halaman</x-button>
             </div>
 
             <!-- Table Section -->
@@ -533,10 +515,7 @@
                     </h1>
                     <p class="text-sm text-gray-500">Kelola catatan, peringatan, dan penghargaan</p>
                 </div>
-                <a href="{{ route('note') }}"
-                    class="px-6 py-3 bg-slate-700 text-white rounded-lg shadow-md hover:bg-green-600 transition font-semibold flex items-center gap-2">
-                    <i class="fa fa-external-link"></i> Ke Halaman
-                </a>
+                <x-button href="{{ route('note') }}" size="lg" variant="primary" class="bg-slate-700 hover:bg-green-600 shadow-md" icon="external-link">Ke Halaman</x-button>
             </div>
 
             <!-- Table Section -->

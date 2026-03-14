@@ -36,6 +36,7 @@ return new class extends Migration
             $table->boolean('participates_bpjs_kes')->default(true);
             $table->boolean('participates_bpjs_tk')->default(true);
             $table->boolean('participates_bpjs_jp')->default(true);
+            $table->boolean('participates_infaq')->default(false);
             $table->date('join_date');
             $table->enum('status', ['PKWT', 'PKWTT', 'DAILY_WORKER'])->default('PKWT');
             $table->string('password');

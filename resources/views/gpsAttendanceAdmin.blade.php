@@ -36,15 +36,9 @@
                         <input type="date" name="end_date" value="{{ $endDate }}"
                             class="rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-indigo-500">
                     </div>
-                    <button type="submit"
-                        class="px-6 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-bold">
-                        <i class="fas fa-search"></i> Filter
-                    </button>
+                    <x-button type="submit" icon="search">Filter</x-button>
                 </form>
-                <a href="{{ route('attendanceReportExport', ['start' => $startDate, 'end' => $endDate]) }}"
-                    class="px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-bold flex items-center gap-2">
-                    <i class="fas fa-file-excel"></i> Export
-                </a>
+                <x-button href="{{ route('attendanceReportExport', ['start' => $startDate, 'end' => $endDate]) }}" variant="success" icon="file-excel">Export</x-button>
             </div>
 
             <!-- Summary Cards -->
@@ -75,6 +69,7 @@
                     <table id="myTable" class="w-full text-left">
                         <thead class="bg-gray-100 text-gray-600 text-sm leading-normal">
                             <tr>
+                                                                <th class="p-4 font-bold rounded-tl-lg text-center" width="5%">No</th>
                                 <th class="p-4 font-bold">Karyawan</th>
                                 <th class="p-4 font-bold text-center">Tanggal</th>
                                 <th class="p-4 font-bold text-center">Check-In</th>
@@ -86,11 +81,13 @@
                             </tr>
                         </thead>
                         <tbody class="text-sm divide-y divide-gray-200">
+                                                        @php $no = 1; @endphp
                             @forelse($logs as $log)
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="p-4">
-                                        <div class="font-bold text-gray-800">{{ $log->employee->name }}</div>
-                                        <div class="text-xs text-gray-500">
+                                <tr class="hover:bg-gray-50 transition duration-150">
+                                    <td class="p-4 font-medium text-center">{{ $no++ }}</td>
+                                    <td class="p-4 space-y-1">
+                                        <div class="font-bold text-gray-900 text-base group-hover:text-cyan-600">{{ $log->employee->name }}</div>
+                                        <div class="text-xs text-gray-400">
                                             {{ $log->employee->position->name ?? '-' }} |
                                             {{ $log->employee->branch->name ?? '-' }}
                                         </div>

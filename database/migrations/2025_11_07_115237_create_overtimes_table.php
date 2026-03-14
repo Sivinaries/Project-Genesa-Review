@@ -23,6 +23,7 @@ return new class extends Migration
             $table->time('end_time');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->decimal('overtime_pay', 15, 2)->default(0);
+            $table->longText('note')->nullable();
             $table->timestamps();
         });
     }

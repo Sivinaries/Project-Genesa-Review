@@ -14,6 +14,7 @@ class Deduct extends Model
             'compani_id',
             'name',
             'type',
+            'is_taxable',
         ];
 
     public function compani()

@@ -32,12 +32,8 @@
                     <p class="text-sm text-gray-500 mt-1">Kelola data outlet untuk cabang {{ $branch->name }}</p>
                 </div>
                 <div class="flex gap-2">
-                    <a href="{{ route('branch') }}" class="px-5 py-3 bg-white border border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition flex items-center gap-2">
-                        <i class="fas fa-arrow-left"></i> Kembali ke Cabang
-                    </a>
-                    <button id="addBtn" class="px-6 py-3 bg-cyan-600 text-white rounded-lg shadow-md hover:bg-cyan-700 transition font-semibold flex items-center gap-2">
-                        <i class="fas fa-plus"></i> Tambah Outlet
-                    </button>
+                    <x-button href="{{ route('branch') }}" variant="secondary" icon="arrow-left">Kembali ke Cabang</x-button>
+                    <x-button id="addBtn" size="lg" variant="primary" class="bg-cyan-600 hover:bg-cyan-700 shadow-md" icon="plus">Tambah Outlet</x-button>
                 </div>
             </div>
 
@@ -87,7 +83,7 @@
                                     </td>
                                     <td class="p-4">
                                         <div class="flex justify-center items-center gap-2">
-                                            <button class="editBtn w-9 h-9 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition"
+                                            <button class="editBtn w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition"
                                                 data-id="{{ $item->id }}"
                                                 data-name="{{ $item->name }}"
                                                 data-phone="{{ $item->phone }}"
@@ -101,7 +97,7 @@
 
                                             <form method="post" action="{{ route('deloutlet', ['id' => $item->id]) }}" class="inline deleteForm">
                                                 @csrf @method('delete')
-                                                <button type="button" class="delete-confirm w-9 h-9 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition" title="Delete">
+                                                <button type="button" class="delete-confirm w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition" title="Delete">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -192,14 +188,8 @@
                     </div>
 
                     <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                        <button type="button" id="cancelAdd"
-                            class="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition">
-                            Batal
-                        </button>
-                        <button type="submit"
-                            class="px-8 py-2.5 bg-cyan-600 text-white font-bold rounded-lg shadow-md hover:bg-cyan-700 transition">
-                            Simpan Outlet
-                        </button>
+                        <x-button type="button" id="cancelAdd" variant="secondary">Batal</x-button>
+                        <x-button type="submit" variant="primary" class="bg-cyan-600 hover:bg-cyan-700 shadow-md">Simpan Outlet</x-button>
                     </div>
                 </form>
             </div>
@@ -281,14 +271,8 @@
                     </div>
 
                     <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                        <button type="button" id="closeEditModalBtn"
-                            class="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition">
-                            Batal
-                        </button>
-                        <button type="submit"
-                            class="px-8 py-2.5 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition">
-                            Perbarui Outlet
-                        </button>
+                        <x-button type="button" id="closeEditModalBtn" variant="secondary">Batal</x-button>
+                        <x-button type="submit" variant="primary" class="bg-cyan-600 hover:bg-cyan-700 shadow-md">Update Outlet</x-button>
                     </div>
                 </form>
             </div>

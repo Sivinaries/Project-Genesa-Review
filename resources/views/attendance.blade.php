@@ -43,22 +43,16 @@
                 </div>
                 <div class="flex gap-2 flex-wrap">
                     <!-- SYNC FINGERSPOT (Backup Data) -->
-                    <button onclick="document.getElementById('syncModal').classList.remove('hidden')"
-                        class="p-2 px-4 bg-white text-blue-600 border border-blue-200 rounded-lg shadow hover:bg-blue-50 transition font-semibold flex items-center gap-2 md:w-fit w-full">
-                        <i class="fas fa-sync-alt"></i> Sync Fingerspot
-                    </button>
+                    <x-button onclick="document.getElementById('syncModal').classList.remove('hidden')"
+                        variant="secondary" icon="sync-alt">Sync Fingerspot</x-button>
 
                     <!-- AUTO-GENERATE (Process Data) -->
-                    <button onclick="document.getElementById('autoGenerateModal').classList.remove('hidden')"
-                        class="p-2 px-4 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition font-semibold flex items-center gap-2 md:w-fit w-full">
-                        <i class="fas fa-magic"></i> Auto-Generate
-                    </button>
+                    <x-button onclick="document.getElementById('autoGenerateModal').classList.remove('hidden')"
+                        icon="magic">Auto-Generate</x-button>
 
                     <!-- MANUAL INPUT -->
-                    <a href="{{ route('manageattendance') }}"
-                        class="p-2 px-6 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition font-semibold flex items-center w-fit gap-2 md:w-fit w-full">
-                        <i class="fas fa-plus"></i> Input Manual
-                    </a>
+                    <x-button href="{{ route('manageattendance') }}" variant="success" icon="plus">Input
+                        Manual</x-button>
                 </div>
             </div>
 
@@ -115,6 +109,7 @@
                     <table id="myTable" class="w-full text-left">
                         <thead class="bg-gray-100 text-gray-600 text-sm leading-normal">
                             <tr>
+                                <th class="p-4 font-bold rounded-tl-lg text-center" width="5%">No</th>
                                 <th class="p-4 font-bold">Rentang Periode</th>
                                 <th class="p-4 font-bold text-center">Source</th>
                                 <th class="p-4 font-bold text-center">Total Karyawan</th>
@@ -124,7 +119,8 @@
                         </thead>
                         <tbody class="divide-y divide-gray-200 text-gray-700 text-sm">
                             @foreach ($batches as $batch)
-                                <tr class="hover:bg-gray-50 transition">
+                                <tr class="hover:bg-gray-50 transition duration-150">
+                                    <td class="p-4 font-medium text-center">{{ $no++ }}</td>
                                     <td class="p-4">
                                         <div class="flex flex-col">
                                             <a href="{{ route('manageattendance', ['start' => $batch->period_start, 'end' => $batch->period_end]) }}"
@@ -155,8 +151,7 @@
                                         @endif
                                     </td>
                                     <td class="p-4 text-center">
-                                        <span
-                                            class="bg-blue-100 text-blue-800 text-xs font-medium px-3 py-1 rounded-full">
+                                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-3 py-1 rounded-full">
                                             {{ $batch->total_records }} Data
                                         </span>
                                     </td>
@@ -172,7 +167,7 @@
                                             <input type="hidden" name="end" value="{{ $batch->period_end }}">
 
                                             <button type="button"
-                                                class="delete-confirm p-2 w-9 h-9 text-white bg-red-500 rounded-lg shadow hover:bg-red-600 transition"
+                                                class="delete-confirm p-2 w-10 h-10 text-white bg-red-500 rounded-lg shadow hover:bg-red-600 transition"
                                                 title="Delete Batch">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -219,14 +214,10 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Sampai Tanggal</label>
-                    <input type="date" name="end_date" class="w-full rounded-lg border-gray-300 p-2.5 border"
-                        required>
+                    <input type="date" name="end_date" class="w-full rounded-lg border-gray-300 p-2.5 border" required>
                 </div>
 
-                <button type="submit"
-                    class="w-full py-3 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition flex justify-center items-center gap-2">
-                    <i class="fas fa-download"></i> Sync Data Sekarang
-                </button>
+                <x-button type="submit" class="w-full justify-center" icon="download">Sync Data Sekarang</x-button>
             </form>
         </div>
     </div>
@@ -274,14 +265,10 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Sampai Tanggal</label>
-                    <input type="date" name="end_date" class="w-full rounded-lg border-gray-300 p-2.5 border"
-                        required>
+                    <input type="date" name="end_date" class="w-full rounded-lg border-gray-300 p-2.5 border" required>
                 </div>
 
-                <button type="submit"
-                    class="w-full py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition flex justify-center items-center gap-2">
-                    <i class="fas fa-cogs"></i> Generate Rekap Sekarang
-                </button>
+                <x-button type="submit" class="w-full justify-center" icon="cogs">Generate Rekap Sekarang</x-button>
             </form>
         </div>
     </div>
@@ -289,10 +276,10 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="//cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             new DataTable('#myTable', {});
 
-            $('.delete-confirm').click(function(e) {
+            $('.delete-confirm').click(function (e) {
                 e.preventDefault();
                 const form = this.closest('form');
                 Swal.fire({

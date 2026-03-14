@@ -37,18 +37,15 @@
                 class="md:flex justify-between items-center bg-white p-5 rounded-xl shadow-sm border border-gray-100 space-y-2 md:space-y-0">
                 <div>
                     <h1 class="font-bold text-2xl text-gray-800">
-                        <i class="fas fa-building text-cyan-600"></i> 
+                        <i class="fas fa-building text-cyan-600"></i>
                         Manajemen Cabang
                     </h1>
                     <p class="text-sm text-gray-500">
                         Kelola lokasi dan kategori cabang perusahaan
                     </p>
                 </div>
-                <button id="addBtn"
-                    class="px-6 py-3 bg-cyan-600 text-white rounded-lg shadow-md hover:bg-cyan-700 transition font-semibold flex items-center gap-2">
-                    <i class="fas fa-plus"></i> 
-                    Tambah Cabang
-                </button>
+                <x-button id="addBtn" size="lg" variant="primary" class="bg-cyan-600 hover:bg-cyan-700 shadow-md"
+                    icon="plus">Tambah</x-button>
             </div>
 
             <!-- Table -->
@@ -58,7 +55,7 @@
                         <thead class="bg-gray-100 text-gray-600 text-sm leading-normal">
                             <tr>
                                 <th class="p-4 font-bold rounded-tl-lg text-center" width="5%">No</th>
-                                <th class="p-4 font-bold">Nama Cabang</th>
+                                <th class="p-4 font-bold">Nama</th>
                                 <th class="p-4 font-bold">Kategori</th>
                                 <th class="p-4 font-bold">Kontak</th>
                                 <th class="p-4 font-bold text-center">GPS</th>
@@ -76,9 +73,11 @@
                                     </td>
                                     <td class="p-4 space-y-1">
                                         <a href="{{ route('outlet', ['branchId' => $item->id]) }}" class="group block">
-                                            <div class="font-bold text-gray-900 text-base group-hover:text-cyan-600">{{ $item->name }}</div>
+                                            <div class="font-bold text-gray-900 text-base group-hover:text-cyan-600">
+                                                {{ $item->name }}</div>
                                             <div class="text-xs text-gray-400">Created:
-                                                {{ $item->created_at ? $item->created_at->format('Y-m-d') : '-' }}</div>
+                                                {{ $item->created_at ? $item->created_at->format('Y-m-d') : '-' }}
+                                            </div>
                                         </a>
                                     </td>
                                     <td class="p-4">
@@ -88,8 +87,8 @@
                                         </span>
                                     </td>
                                     <td class="p-4 text-xs space-y-1">
-                                        <div class="flex items-center gap-2"><i
-                                                class="fas fa-phone text-gray-400 w-4"></i> {{ $item->phone }}</div>
+                                        <div class="flex items-center gap-2"><i class="fas fa-phone text-gray-400 w-4"></i>
+                                            {{ $item->phone }}</div>
                                         <div class="flex items-center gap-2"><i
                                                 class="fas fa-map-marker-alt text-gray-400 w-4"></i>
                                             {{ \Illuminate\Support\Str::limit($item->address, 30) }}</div>
@@ -97,13 +96,16 @@
                                     <td class="p-4 text-center">
                                         @if($item->latitude && $item->longitude)
                                             <div class="flex flex-col items-center gap-1">
-                                                <span class="text-xs font-mono text-gray-600 bg-green-50 px-2 py-1 rounded border border-green-200">
+                                                <span
+                                                    class="text-xs font-mono text-gray-600 bg-green-50 px-2 py-1 rounded border border-green-200">
                                                     <i class="fas fa-check-circle text-green-600"></i> Set
                                                 </span>
-                                                <span class="text-[10px] text-gray-400">{{ number_format($item->gps_radius ?? 5000) }}m</span>
+                                                <span
+                                                    class="text-[10px] text-gray-400">{{ number_format($item->gps_radius ?? 5000) }}m</span>
                                             </div>
                                         @else
-                                            <span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded border border-red-200">
+                                            <span
+                                                class="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded border border-red-200">
                                                 <i class="fas fa-times-circle"></i> Not Set
                                             </span>
                                         @endif
@@ -112,15 +114,11 @@
                                         <div class="flex justify-center items-center gap-2">
                                             <button
                                                 class="editBtn w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 hover:scale-105 transition"
-                                                data-id="{{ $item->id }}" 
-                                                data-name="{{ $item->name }}"
-                                                data-phone="{{ $item->phone }}" 
-                                                data-address="{{ $item->address }}"
-                                                data-category="{{ $item->category }}"
-                                                data-latitude="{{ $item->latitude }}"
+                                                data-id="{{ $item->id }}" data-name="{{ $item->name }}"
+                                                data-phone="{{ $item->phone }}" data-address="{{ $item->address }}"
+                                                data-category="{{ $item->category }}" data-latitude="{{ $item->latitude }}"
                                                 data-longitude="{{ $item->longitude }}"
-                                                data-gps-radius="{{ $item->gps_radius ?? 1000 }}"
-                                                title="Edit">
+                                                data-gps-radius="{{ $item->gps_radius ?? 1000 }}" title="Edit">
                                                 <i class="fas fa-edit text-lg"></i>
                                             </button>
 
@@ -128,7 +126,7 @@
                                                 class="inline deleteForm">
                                                 @csrf @method('delete')
                                                 <button type="button"
-                                                    class="delete-confirm w-9 h-9 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition"
+                                                    class="delete-confirm w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition"
                                                     title="Delete">
                                                     <i class="fas fa-trash text-lg"></i>
                                                 </button>
@@ -146,35 +144,38 @@
     </main>
 
     <!-- ADD MODAL -->
-    <div id="addModal" class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto px-4 py-6">
+    <div id="addModal"
+        class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto px-4 py-6">
         <div class="bg-white rounded-2xl p-0 w-full max-w-2xl shadow-2xl relative my-5 flex flex-col max-h-[90vh]">
             <!-- Header -->
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl sticky top-0 z-10">
+            <div
+                class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl sticky top-0 z-10">
                 <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
                     <div class="w-8 h-8 bg-cyan-100 rounded-full flex items-center justify-center text-cyan-600">
                         <i class="fas fa-building"></i>
                     </div>
-                    Tambah Cabang
+                    Tambah
                 </h2>
-                <button id="closeAddModal" class="text-gray-400 hover:text-red-500 transition text-2xl leading-none">&times;</button>
+                <button id="closeAddModal"
+                    class="text-gray-400 hover:text-red-500 transition text-2xl leading-none">&times;</button>
             </div>
 
             <!-- Body (Scrollable) -->
             <div class="p-6 overflow-y-auto flex-grow">
                 <form id="addForm" method="post" action="{{ route('postbranch') }}" class="space-y-5">
                     @csrf
-                    
+
                     <!-- Basic Info -->
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Cabang <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Nama</label>
                             <input type="text" name="name"
                                 class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-cyan-500"
                                 required>
                         </div>
-                        
+
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Kategori <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Kategori </label>
                             <select name="category"
                                 class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-cyan-500"
                                 required>
@@ -188,13 +189,13 @@
                                 <option value="logistics">Logistik</option>
                             </select>
                         </div>
-                        
+
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Nomor Telepon</label>
                             <input type="text" name="phone"
                                 class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-cyan-500">
                         </div>
-                        
+
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Alamat</label>
                             <textarea name="address" rows="2"
@@ -204,15 +205,16 @@
 
                     <!-- GPS Section -->
                     <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100">
-                        <h3 class="text-sm font-bold text-indigo-700 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <h3
+                            class="text-sm font-bold text-indigo-700 uppercase tracking-wider mb-4 flex items-center gap-2">
                             <i class="fas fa-map-marker-alt"></i> Lokasi GPS
                         </h3>
-                        
+
                         <div class="space-y-4">
                             <input type="text" id="addLocation" name="location_display" readonly
                                 class="bg-white border border-gray-300 text-gray-900 p-3 rounded-xl w-full"
                                 placeholder="Klik peta atau gunakan pencarian untuk menandai lokasi" />
-                            
+
                             <input type="hidden" name="latitude" id="addLatitude">
                             <input type="hidden" name="longitude" id="addLongitude">
 
@@ -231,62 +233,59 @@
                                 </button>
                             </div>
 
-                            <div id="addMap" class="w-full h-64 rounded-xl border border-gray-300 shadow-sm overflow-hidden"></div>
-                            
+                            <div id="addMap"
+                                class="w-full h-64 rounded-xl border border-gray-300 shadow-sm overflow-hidden"></div>
+
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">Radius GPS (meter)</label>
                                 <input type="number" name="gps_radius" value="1000" min="100" max="5000"
                                     class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-indigo-500">
-                                <p class="text-xs text-gray-400 mt-1">Jarak maksimal karyawan dapat absen (Default: 1000m = 1km)</p>
+                                <p class="text-xs text-gray-400 mt-1">Jarak maksimal karyawan dapat absen (Default:
+                                    1000m = 1km)</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                        <button type="button" id="cancelAdd"
-                            class="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition">
-                            Batal
-                        </button>
-                        <button type="submit"
-                            class="px-8 py-2.5 bg-cyan-600 text-white font-bold rounded-lg shadow-md hover:bg-cyan-700 transition">
-                            Simpan Cabang
-                        </button>
-                    </div>
+                    <x-button type="submit" variant="primary" icon="save"
+                        class="w-full bg-slate-700 hover:bg-slate-800 justify-center">Simpan</x-button>
                 </form>
             </div>
         </div>
     </div>
 
     <!-- EDIT MODAL -->
-    <div id="editModal" class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto px-4 py-6">
+    <div id="editModal"
+        class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto px-4 py-6">
         <div class="bg-white rounded-2xl p-0 w-full max-w-2xl shadow-2xl relative my-5 flex flex-col max-h-[90vh]">
             <!-- Header -->
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl sticky top-0 z-10">
+            <div
+                class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl sticky top-0 z-10">
                 <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
                     <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
                         <i class="fas fa-edit"></i>
                     </div>
-                    Edit Cabang
+                    Edit
                 </h2>
-                <button id="closeModal" class="text-gray-400 hover:text-red-500 transition text-2xl leading-none">&times;</button>
+                <button id="closeModal"
+                    class="text-gray-400 hover:text-red-500 transition text-2xl leading-none">&times;</button>
             </div>
 
             <!-- Body (Scrollable) -->
             <div class="p-6 overflow-y-auto flex-grow">
                 <form id="editForm" method="post" class="space-y-5">
                     @csrf @method('put')
-                    
+
                     <!-- Basic Info -->
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Cabang <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Nama </label>
                             <input type="text" id="editName" name="name"
                                 class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-blue-500"
                                 required>
                         </div>
-                        
+
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Kategori <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Kategori </label>
                             <select id="editCategory" name="category"
                                 class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-blue-500"
                                 required>
@@ -300,13 +299,13 @@
                                 <option value="logistics">Logistik</option>
                             </select>
                         </div>
-                        
+
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Nomor Telepon</label>
                             <input type="text" id="editPhone" name="phone"
                                 class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-blue-500">
                         </div>
-                        
+
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Alamat</label>
                             <textarea id="editAddress" name="address" rows="2"
@@ -316,15 +315,16 @@
 
                     <!-- GPS Section -->
                     <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
-                        <h3 class="text-sm font-bold text-blue-700 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <h3
+                            class="text-sm font-bold text-blue-700 uppercase tracking-wider mb-4 flex items-center gap-2">
                             <i class="fas fa-map-marker-alt"></i> Lokasi GPS
                         </h3>
-                        
+
                         <div class="space-y-4">
                             <input type="text" id="editLocation" name="location_display" readonly
                                 class="bg-white border border-gray-300 text-gray-900 p-3 rounded-xl w-full"
                                 placeholder="Klik peta atau gunakan pencarian untuk menandai lokasi" />
-                            
+
                             <input type="hidden" name="latitude" id="editLatitude">
                             <input type="hidden" name="longitude" id="editLongitude">
 
@@ -343,27 +343,21 @@
                                 </button>
                             </div>
 
-                            <div id="editMap" class="w-full h-64 rounded-xl border border-gray-300 shadow-sm overflow-hidden"></div>
-                            
+                            <div id="editMap"
+                                class="w-full h-64 rounded-xl border border-gray-300 shadow-sm overflow-hidden"></div>
+
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">Radius GPS (meter)</label>
-                                <input type="number" id="editGpsRadius" name="gps_radius" value="1000" min="100" max="5000"
+                                <input type="number" id="editGpsRadius" name="gps_radius" value="1000" min="100"
+                                    max="5000"
                                     class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-blue-500">
-                                <p class="text-xs text-gray-400 mt-1">Jarak maksimal karyawan dapat absen (Default: 1000m = 1km)</p>
+                                <p class="text-xs text-gray-400 mt-1">Jarak maksimal karyawan dapat absen (Default:
+                                    1000m = 1km)</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                        <button type="button" id="closeEditModalBtn"
-                            class="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition">
-                            Batal
-                        </button>
-                        <button type="submit"
-                            class="px-8 py-2.5 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition">
-                            Perbarui Cabang
-                        </button>
-                    </div>
+                <x-button type="submit" variant="primary" icon="save" class="w-full bg-blue-600 hover:bg-blue-700 justify-center">Perbarui</x-button>
                 </form>
             </div>
         </div>
@@ -374,7 +368,7 @@
     <script src="//cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             new DataTable('#myTable', {});
 
             const addModal = $('#addModal');
@@ -385,7 +379,7 @@
                 addModal.removeClass('hidden');
                 setTimeout(() => initAddMap(), 100);
             });
-            
+
             $('#closeAddModal, #cancelAdd').click(() => addModal.addClass('hidden'));
             $('#closeModal, #closeEditModalBtn').click(() => editModal.addClass('hidden'));
 
@@ -395,44 +389,41 @@
             });
 
             // Edit Logic
-            $(document).on('click', '.editBtn', function() {
+            $(document).on('click', '.editBtn', function () {
                 const btn = $(this);
                 $('#editName').val(btn.data('name'));
                 $('#editPhone').val(btn.data('phone'));
                 $('#editAddress').val(btn.data('address'));
                 $('#editCategory').val(btn.data('category'));
                 $('#editGpsRadius').val(btn.data('gps-radius'));
-                
+
                 const lat = btn.data('latitude');
                 const lon = btn.data('longitude');
-                
+
                 if (lat && lon) {
                     $('#editLatitude').val(lat);
                     $('#editLongitude').val(lon);
                     $('#editLocation').val(`Lat: ${parseFloat(lat).toFixed(6)}, Lon: ${parseFloat(lon).toFixed(6)}`);
                 }
-                
+
                 $('#editForm').attr('action', `/branch/${btn.data('id')}/update`);
                 editModal.removeClass('hidden');
-                
+
                 setTimeout(() => initEditMap(lat, lon), 100);
             });
 
             // Delete Confirm
-            $(document).on('click', '.delete-confirm', function(e) {
+            $(document).on('click', '.delete-confirm', function (e) {
                 e.preventDefault();
                 const form = $(this).closest('form');
                 Swal.fire({
-                    title: 'Hapus Cabang?',
-                    text: 'Data cabang yang dihapus tidak dapat dikembalikan.',
+                    title: 'Hapus?',
+                    text: "Anda tidak akan dapat mengembalikan ini!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
-                    confirmButtonText: 'Ya, hapus',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) form.submit();
-                });
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => { if (result.isConfirmed) form.submit(); });
             });
         });
 
@@ -445,23 +436,23 @@
             if (addMap) {
                 addMap.remove();
             }
-            
+
             addMap = L.map('addMap').setView([-6.21462, 106.84513], 15);
-            
+
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '© OpenStreetMap'
             }).addTo(addMap);
-            
-            addMarker = L.marker([-6.21462, 106.84513], {draggable: true}).addTo(addMap);
+
+            addMarker = L.marker([-6.21462, 106.84513], { draggable: true }).addTo(addMap);
             addMarker.bindPopup('Drag marker atau klik peta').openPopup();
-            
-            addMarker.on('dragend', function(e) {
+
+            addMarker.on('dragend', function (e) {
                 const pos = e.target.getLatLng();
                 updateAddCoordinates(pos.lat, pos.lng);
             });
-            
-            addMap.on('click', function(e) {
+
+            addMap.on('click', function (e) {
                 addMarker.setLatLng(e.latlng);
                 updateAddCoordinates(e.latlng.lat, e.latlng.lng);
             });
@@ -493,7 +484,7 @@
 
         function useMyLocationAdd() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
+                navigator.geolocation.getCurrentPosition(function (position) {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
                     addMap.setView([lat, lon], 15);
@@ -510,26 +501,26 @@
             if (editMap) {
                 editMap.remove();
             }
-            
+
             const defaultLat = lat || -6.21462;
             const defaultLon = lng || 106.84513;
-            
+
             editMap = L.map('editMap').setView([defaultLat, defaultLon], 15);
-            
+
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '© OpenStreetMap'
             }).addTo(editMap);
-            
-            editMarker = L.marker([defaultLat, defaultLon], {draggable: true}).addTo(editMap);
+
+            editMarker = L.marker([defaultLat, defaultLon], { draggable: true }).addTo(editMap);
             editMarker.bindPopup('Drag marker atau klik peta');
-            
-            editMarker.on('dragend', function(e) {
+
+            editMarker.on('dragend', function (e) {
                 const pos = e.target.getLatLng();
                 updateEditCoordinates(pos.lat, pos.lng);
             });
-            
-            editMap.on('click', function(e) {
+
+            editMap.on('click', function (e) {
                 editMarker.setLatLng(e.latlng);
                 updateEditCoordinates(e.latlng.lat, e.latlng.lng);
             });
@@ -561,7 +552,7 @@
 
         function useMyLocationEdit() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
+                navigator.geolocation.getCurrentPosition(function (position) {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
                     editMap.setView([lat, lon], 15);

@@ -41,10 +41,7 @@
                     </h1>
                     <p class="text-sm text-gray-500">Pusat informasi untuk pengumuman internal perusahaan.</p>
                 </div>
-                <button id="addBtn"
-                    class="px-6 py-3 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition font-semibold flex items-center gap-2">
-                    <i class="fas fa-plus"></i> Tambah Pengumuman
-                </button>
+                <x-button id="addBtn" size="lg" variant="danger" icon="plus">Tambah</x-button>
             </div>
 
             <!-- Table -->
@@ -54,8 +51,7 @@
                         <thead class="bg-gray-100 text-gray-600 text-sm leading-normal">
                             <tr>
                                 <th class="p-4 font-bold rounded-tl-lg text-center" width="5%">No</th>
-                                <th class="p-4 font-bold">Tanggal</th>
-                                <th class="p-4 font-bold">Isi Pengumuman</th>
+                                <th class="p-4 font-bold">Name</th>
                                 <th class="p-4 font-bold text-center rounded-tr-lg" width="15%">Aksi</th>
                             </tr>
                         </thead>
@@ -66,20 +62,20 @@
                                     <td class="p-4 font-medium text-center">
                                         {{ $no++ }}
                                     </td>
-                                    <td class="p-4 font-medium">
-                                        {{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}
-                                    </td>
-                                    <td class="p-4 text-xs text-gray-600 italic max-w-xs truncate">
-                                        "{{ \Illuminate\Support\Str::limit($item->content, 40) }}"
-                                    </td>
+                                    <td class="p-4 space-y-1">
+
+                                         <div class="font-bold text-gray-900 text-base group-hover:text-cyan-600">"{{ \Illuminate\Support\Str::limit($item->content, 40) }}"</div>
+                                            <div class="text-xs text-gray-400">Created:
+                                                {{ $item->created_at ? $item->created_at->format('Y-m-d') : '-' }}</div>
+                                    </td> 
                                     <td class="p-4">
                                         <div class="flex justify-center items-center gap-2">
                                             <!-- Edit Button -->
                                             <button
-                                                class="editBtn w-9 h-9 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 hover:scale-105 transition"
+                                                class="editBtn w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 hover:scale-105 transition"
                                                 data-id="{{ $item->id }}" data-content="{{ $item->content }}"
                                                 title="Edit">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-edit text-lg"></i>
                                             </button>
 
                                             <!-- Delete Button -->
@@ -89,9 +85,9 @@
                                                 @csrf
                                                 @method('delete')
                                                 <button type="button"
-                                                    class="delete-confirm w-9 h-9 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition"
+                                                    class="delete-confirm w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition"
                                                     title="Hapus">
-                                                    <i class="fas fa-trash"></i>
+                                                    <i class="fas fa-trash text-lg"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -114,7 +110,7 @@
                 <i class="fas fa-times text-xl"></i>
             </button>
             <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-                <i class="fa-solid fa-bullhorn text-red-700"></i> Tambah Pengumuman
+                <i class="fa-solid fa-bullhorn text-red-700"></i> Tambah
             </h2>
 
             <form id="addForm" method="post" action="{{ route('postannouncement') }}" class="space-y-5">
@@ -127,10 +123,8 @@
                         placeholder="Tulis isi pengumuman di sini..." required></textarea>
                 </div>
 
-                <button type="submit"
-                    class="w-full py-3 bg-red-600 text-white font-bold rounded-lg shadow-md hover:bg-red-700 transition flex justify-center items-center gap-2">
-                    <i class="fas fa-check"></i> Simpan Pengumuman
-                </button>
+                    <x-button type="submit" variant="primary" icon="save"
+                        class="w-full bg-slate-700 hover:bg-slate-800 justify-center">Simpan</x-button>
             </form>
         </div>
     </div>
@@ -143,7 +137,7 @@
                 <i class="fas fa-times text-xl"></i>
             </button>
             <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-                <i class="fas fa-edit text-red-600"></i> Edit Pengumuman
+                <i class="fas fa-edit text-red-600"></i> Edit
             </h2>
 
             <form id="editForm" method="post" class="space-y-5">
@@ -157,10 +151,7 @@
                         required></textarea>
                 </div>
 
-                <button type="submit"
-                    class="w-full py-3 bg-red-600 text-white font-bold rounded-lg shadow-md hover:bg-red-700 transition flex justify-center items-center gap-2">
-                    <i class="fas fa-save"></i> Perbarui Pengumuman
-                </button>
+                <x-button type="submit" variant="primary" icon="save" class="w-full justify-center">Perbarui</x-button>
             </form>
         </div>
     </div>
@@ -190,16 +181,13 @@
                 e.preventDefault();
                 const form = $(this).closest('form');
                 Swal.fire({
-                    title: 'Hapus Pengumuman?',
-                    text: 'Tindakan ini tidak dapat dibatalkan!',
+                    title: 'Hapus?',
+                    text: "Anda tidak akan dapat mengembalikan ini!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Ya, hapus'
-                }).then((result) => {
-                    if (result.isConfirmed) form.submit();
-                });
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => { if (result.isConfirmed) form.submit(); });
             });
         });
     </script>

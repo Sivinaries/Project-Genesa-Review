@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('compani_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('name');
             $table->string('category');
+            $table->boolean('is_head')->default(false);
             $table->decimal('base_salary_default', 15, 2)->default(0);
             $table->timestamps();
         });

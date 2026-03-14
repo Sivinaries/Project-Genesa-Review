@@ -27,6 +27,9 @@ return new class extends Migration
                 'health_beauty',
                 'logistics',
             ])->default('general');
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
+            $table->integer('gps_radius')->nullable();
             $table->timestamps();
         });
     }

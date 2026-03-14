@@ -30,9 +30,7 @@
                     </h1>
                     <p class="text-sm text-gray-500 mt-1">Kelola jabatan dan gaji default</p>
                 </div>
-                <button id="addBtn" class="px-6 py-3 bg-slate-700 text-white rounded-lg shadow-md hover:bg-slate-800 transition font-semibold flex items-center gap-2">
-                    <i class="fas fa-plus"></i> Tambah Jabatan
-                </button>
+                <x-button id="addBtn" size="lg" variant="primary" class="bg-slate-700 hover:bg-slate-800 shadow-md" icon="plus">Tambah</x-button>
             </div>
 
             <!-- Table -->
@@ -42,7 +40,7 @@
                         <thead class="bg-gray-100 text-gray-600 text-sm leading-normal">
                             <tr>
                                 <th class="p-4 font-bold rounded-tl-lg text-center" width="5%">No</th>
-                                <th class="p-4 font-bold">Nama Jabatan</th>
+                                <th class="p-4 font-bold">Nama</th>
                                 <th class="p-4 font-bold">Kategori</th>
                                 <th class="p-4 font-bold text-right">Gaji</th>
                                 <th class="p-4 font-bold text-center rounded-tr-lg" width="15%">Aksi</th>
@@ -53,10 +51,16 @@
                             @foreach ($positions as $item)
                                 <tr class="hover:bg-gray-50 transition duration-150">
                                     <td class="p-4 font-medium text-center">{{ $no++ }}</td>
-                                    <td class="p-4 font-bold text-gray-900">{{ $item->name }}</td>
-                                    <td class="p-4">
-                                        <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full font-bold border border-gray-200 uppercase">
-                                            {{ str_replace('_', ' ', $item->category) }}
+                                    <td class="p-4 space-y-1">
+
+                                         <div class="font-bold text-gray-900 text-base group-hover:text-cyan-600">{{ $item->name }}</div>
+                                            <div class="text-xs text-gray-400">Created:
+                                                {{ $item->created_at ? $item->created_at->format('Y-m-d') : '-' }}</div>
+                                    </td> 
+                                       <td class="p-4">
+                                        <span
+                                            class="bg-cyan-100 text-cyan-800 text-xs px-3 py-1 rounded-full font-bold border border-cyan-200 uppercase">
+                                            {{ str_replace('_', ' ', $item->category ?? 'General') }}
                                         </span>
                                         
                                         @if($item->is_head)
@@ -70,20 +74,23 @@
                                     </td>
                                     <td class="p-4">
                                         <div class="flex justify-center items-center gap-2">
-                                            <button class="editBtn w-9 h-9 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition"
+                                            <button 
+                                                class="editBtn w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 hover:scale-105 transition"
                                                 data-id="{{ $item->id }}"
                                                 data-name="{{ $item->name }}"
                                                 data-category="{{ $item->category }}"
                                                 data-salary="{{ $item->base_salary_default }}"
                                                 data-is-head="{{ $item->is_head }}"
                                                 title="Edit">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-edit text-lg"></i>
                                             </button>
 
                                             <form method="post" action="{{ route('desposition', $item->id) }}" class="inline deleteForm">
                                                 @csrf @method('delete')
-                                                <button type="button" class="delete-confirm w-9 h-9 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition" title="Delete">
-                                                    <i class="fas fa-trash"></i>
+                                                <button type="button" 
+                                                    class="delete-confirm w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition"
+                                                title="Delete">
+                                                    <i class="fas fa-trash text-lg"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -103,13 +110,13 @@
         <div class="bg-white rounded-2xl p-8 w-full max-w-lg shadow-2xl relative transform transition-all scale-100">
             <button id="closeAddModal" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 transition"><i class="fas fa-times text-xl"></i></button>
             <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-                <i class="fas fa-id-badge text-slate-600"></i> Tambah Jabatan
+                <i class="fas fa-id-badge text-slate-600"></i> Tambah 
             </h2>
 
             <form action="{{ route('postposition') }}" method="POST" class="space-y-5">
                 @csrf
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Jabatan</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama</label>
                     <input type="text" name="name" class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-slate-500" required placeholder="e.g. Senior Barista">
                 </div>
 
@@ -143,9 +150,7 @@
                     </label>
                 </div>
 
-                <button type="submit" class="w-full py-3 bg-slate-700 text-white font-bold rounded-lg shadow-md hover:bg-slate-800 transition flex justify-center items-center gap-2">
-                    <i class="fas fa-save"></i> Simpan Jabatan
-                </button>
+                <x-button type="submit" variant="primary" icon="save" class="w-full bg-slate-700 hover:bg-slate-800 justify-center">Simpan</x-button>
             </form>
         </div>
     </div>
@@ -155,14 +160,14 @@
         <div class="bg-white rounded-2xl p-8 w-full max-w-lg shadow-2xl relative transform transition-all scale-100">
             <button id="closeModal" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 transition"><i class="fas fa-times text-xl"></i></button>
             <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-                <i class="fas fa-edit text-blue-600"></i> Edit Jabatan
+                <i class="fas fa-edit text-blue-600"></i> Edit
             </h2>
 
             <form id="editForm" method="POST" class="space-y-5">
                 @csrf @method('PUT')
                 
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Jabatan</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama</label>
                     <input type="text" id="editName" name="name" class="w-full rounded-lg border-gray-300 shadow-sm p-2.5 border focus:ring-2 focus:ring-blue-500" required>
                 </div>
 
@@ -196,9 +201,7 @@
                     </label>
                 </div>
 
-                <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition flex justify-center items-center gap-2">
-                    <i class="fas fa-save"></i> Perbarui Jabatan
-                </button>
+                <x-button type="submit" variant="primary" icon="save" class="w-full bg-blue-600 hover:bg-blue-700 justify-center">Perbarui</x-button>
             </form>
         </div>
     </div>
@@ -263,7 +266,7 @@
                 e.preventDefault();
                 const form = $(this).closest('form');
                 Swal.fire({
-                    title: 'Hapus Jabatan?',
+                    title: 'Hapus?',
                     text: "Anda tidak akan dapat mengembalikan ini!",
                     icon: 'warning',
                     showCancelButton: true,

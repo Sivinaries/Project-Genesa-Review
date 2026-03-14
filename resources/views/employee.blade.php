@@ -40,10 +40,7 @@
                     </h1>
                     <p class="text-sm text-gray-500 ">Kelola anggota tim dan detail mereka</p>
                 </div>
-                <button id="addBtn"
-                    class="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition font-semibold flex items-center gap-2">
-                    <i class="fas fa-plus"></i> Tambah Karyawan
-                </button>
+                <x-button id="addBtn" size="lg" icon="plus">Tambah</x-button>
             </div>
 
             <!-- Table Section -->
@@ -127,7 +124,7 @@
                                         <div class="flex justify-center items-center gap-2">
                                             {{-- Tombol Edit --}}
                                             <button
-                                                class="editBtn w-9 h-9 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 hover:scale-105 transition cursor-pointer"
+                                                class="editBtn w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 hover:scale-105 transition cursor-pointer"
                                                 data-id="{{ $item->id }}" data-name="{{ $item->name }}"
                                                 data-branch="{{ $item->branch_id }}"
                                                 data-outlet="{{ $item->outlet_id }}" data-email="{{ $item->email }}"
@@ -149,21 +146,21 @@
                                                 data-part-infaq="{{ $item->participates_infaq }}"
                                                 data-bank-name="{{ $item->bank_name }}"
                                                 data-bank-no="{{ $item->bank_account_no }}" title="Edit">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-edit text-lg"></i>
                                             </button>
 
                                             {{-- Tombol Allowance --}}
                                             <a href="{{ route('allowanceEmp', $item->id) }}"
-                                                class="w-9 h-9 flex items-center justify-center bg-emerald-500 text-white rounded-lg shadow hover:bg-emerald-600 hover:scale-105 transition"
+                                                class="w-10 h-10 flex items-center justify-center bg-emerald-500 text-white rounded-lg shadow hover:bg-emerald-600 hover:scale-105 transition"
                                                 title="Allowances">
-                                                <i class="fas fa-hand-holding-dollar"></i>
+                                                <i class="fas fa-hand-holding-dollar text-lg"></i>
                                             </a>
 
                                             {{-- Tombol Deduction --}}
                                             <a href="{{ route('deductionEmp', $item->id) }}"
-                                                class="w-9 h-9 flex items-center justify-center bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-600 hover:scale-105 transition"
+                                                class="w-10 h-10 flex items-center justify-center bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-600 hover:scale-105 transition"
                                                 title="Deductions">
-                                                <i class="fas fa-file-invoice-dollar"></i>
+                                                <i class="fas fa-file-invoice-dollar text-lg"></i>
                                             </a>
 
                                             {{-- Tombol Delete --}}
@@ -172,9 +169,9 @@
                                                 class="inline deleteForm">
                                                 @csrf @method('delete')
                                                 <button type="button"
-                                                    class="delete-confirm w-9 h-9 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition cursor-pointer"
+                                                    class="delete-confirm w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-lg shadow hover:bg-red-600 hover:scale-105 transition cursor-pointer"
                                                     title="Delete">
-                                                    <i class="fas fa-trash"></i>
+                                                    <i class="fas fa-trash text-lg"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -197,7 +194,7 @@
                 <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
                     <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600"><i
                             class="fas fa-user-plus"></i></div>
-                    Tambah Karyawan
+                    Tambah
                 </h2>
                 <button id="closeAddModal"
                     class="text-gray-400 hover:text-red-500 transition text-2xl leading-none">&times;</button>
@@ -449,13 +446,8 @@
                     </div>
 
                     <!-- Footer Action -->
-                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                        <button type="button" id="cancelAdd"
-                            class="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition">Cancel</button>
-                        <button type="submit"
-                            class="px-8 py-2.5 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition">Simpan
-                            Karyawan</button>
-                    </div>
+                    <x-button type="submit" variant="primary" icon="save"
+                        class="w-full bg-slate-700 hover:bg-slate-800 justify-center">Simpan</x-button>
                 </form>
             </div>
         </div>
@@ -709,13 +701,7 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                        <button type="button" id="closeEditModalBtn"
-                            class="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition">Cancel</button>
-                        <button type="submit"
-                            class="px-8 py-2.5 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition">Perbarui
-                            Karyawan</button>
-                    </div>
+                <x-button type="submit" variant="primary" icon="save" class="w-full bg-blue-600 hover:bg-blue-700 justify-center">Perbarui</x-button>
                 </form>
             </div>
         </div>
@@ -924,22 +910,20 @@
                 });
 
                 // Delete Confirm
-                $(document).on('click', '.delete-confirm', function(e) {
-                    e.preventDefault();
-                    const form = $(this).closest('form');
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) form.submit();
-                    });
-                });
+            $(document).on('click', '.delete-confirm', function(e) {
+                e.preventDefault();
+                const form = $(this).closest('form');
+                Swal.fire({
+                    title: 'Hapus?',
+                    text: "Anda tidak akan dapat mengembalikan ini!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => { if (result.isConfirmed) form.submit(); });
             });
+
+        });
         </script>
 
         @include('sweetalert::alert')

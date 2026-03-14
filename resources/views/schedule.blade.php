@@ -200,16 +200,9 @@
                 </a>
 
                 @if ($selectedBranchId)
-                    <button id="addBtn"
-                        class="px-5 py-2.5 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition font-bold flex items-center gap-2 whitespace-nowrap">
-                        <i class="fas fa-plus"></i> Atur Jadwal
-                    </button>
+                    <x-button id="addBtn" icon="plus">Atur Jadwal</x-button>
                 @else
-                    <button disabled
-                        class="px-5 py-2.5 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed font-bold flex items-center gap-2 whitespace-nowrap"
-                        title="Select a branch first">
-                        <i class="fas fa-plus"></i> Atur Jadwal
-                    </button>
+                    <x-button disabled icon="plus" title="Select a branch first">Atur Jadwal</x-button>
                 @endif
             </div>
         @endif
@@ -332,10 +325,7 @@
         @if ($selectedBranchId)
             <div
                 class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg md:max-w-sm mx-auto p-4 z-30">
-                <button id="addBtnESS"
-                    class="w-full py-3.5 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2 transform active:scale-95">
-                    <i class="fas fa-plus-circle"></i>  Atur Jadwal Kerja
-                </button>
+            <x-button id="addBtnESS" class="w-full justify-center" icon="plus-circle">Atur Jadwal Kerja</x-button>
             </div>
         @endif
     @endif
@@ -455,10 +445,7 @@
                 </div>
 
                 <div class="p-4 border-t border-gray-100 bg-white rounded-b-2xl">
-                    <button type="submit" form="addForm"
-                        class="w-full py-3.5 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2 transform active:scale-95">
-                        <i class="fas fa-check"></i> Assign
-                    </button>
+                <x-button type="submit" form="addBtn" form="addForm" class="w-full justify-center" icon="check">Assign</x-button>
                 </div>
             </div>
         </div>
@@ -506,10 +493,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <button type="submit"
-                        class="w-full py-3.5 bg-blue-600 text-white font-bold rounded-xl shadow-md hover:bg-blue-700 transition flex justify-center items-center gap-2 transform active:scale-95">
-                        <i class="fas fa-save"></i> Perbarui
-                    </button>
+                    <x-button type="submit" variant="primary" icon="save" class="w-full justify-center">Perbarui</x-button>
                 </form>
             </div>
         </div>
