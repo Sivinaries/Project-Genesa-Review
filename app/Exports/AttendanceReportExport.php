@@ -2,12 +2,13 @@
 
 namespace App\Exports;
 
+use App\Models\Employee;
 use App\Models\GpsAttendanceLog;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Illuminate\Support\Facades\DB;
 
 class AttendanceReportExport implements FromView, ShouldAutoSize, WithTitle
 {
@@ -50,7 +51,7 @@ class AttendanceReportExport implements FromView, ShouldAutoSize, WithTitle
             ->get();
 
         foreach ($attendanceData as $data) {
-            $data->employee = \App\Models\Employee::with(['branch', 'position'])->find($data->employee_id);
+            $data->employee = Employee::with(['branch', 'position'])->find($data->employee_id);
         }
 
         $groupedByBranch = $attendanceData->groupBy(function ($data) {
@@ -58,19 +59,50 @@ class AttendanceReportExport implements FromView, ShouldAutoSize, WithTitle
         });
 
         $branches = [];
+        $grandTotal = [
+            'count' => 0,
+            'total_present' => 0,
+            'total_late' => 0,
+            'total_sick' => 0,
+            'total_permission' => 0,
+            'total_alpha' => 0,
+            'total_leave' => 0,
+        ];
 
         foreach ($groupedByBranch as $branchId => $dataInBranch) {
             $firstData = $dataInBranch->first();
             $branchName = $firstData->employee->branch->name ?? 'Tanpa Cabang';
 
+            // Calculate subtotals for this branch
+            $subtotal = [
+                'count' => $dataInBranch->count(),
+                'total_present' => $dataInBranch->sum('total_present'),
+                'total_late' => $dataInBranch->sum('total_late'),
+                'total_sick' => $dataInBranch->sum('total_sick'),
+                'total_permission' => $dataInBranch->sum('total_permission'),
+                'total_alpha' => $dataInBranch->sum('total_alpha'),
+                'total_leave' => $dataInBranch->sum('total_leave'),
+            ];
+
+            // Add to grand total
+            $grandTotal['count'] += $subtotal['count'];
+            $grandTotal['total_present'] += $subtotal['total_present'];
+            $grandTotal['total_late'] += $subtotal['total_late'];
+            $grandTotal['total_sick'] += $subtotal['total_sick'];
+            $grandTotal['total_permission'] += $subtotal['total_permission'];
+            $grandTotal['total_alpha'] += $subtotal['total_alpha'];
+            $grandTotal['total_leave'] += $subtotal['total_leave'];
+
             $branches[] = [
                 'branch_name' => $branchName,
                 'attendances' => $dataInBranch,
+                'subtotal' => $subtotal,
             ];
         }
 
         return view('exports.attendanceReport', [
             'branches' => $branches,
+            'grandTotal' => $grandTotal,
             'start' => $this->start,
             'end' => $this->end,
             'companyName' => auth()->user()->compani->name ?? 'Company Name'

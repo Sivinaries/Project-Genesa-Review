@@ -38,7 +38,9 @@
                     </div>
                     <x-button type="submit" icon="search">Filter</x-button>
                 </form>
-                <x-button href="{{ route('attendanceReportExport', ['start' => $startDate, 'end' => $endDate]) }}" variant="success" icon="file-excel">Export</x-button>
+                <a href="{{ route('attendanceReportExport', ['start' => $startDate, 'end' => $endDate]) }}" class="bg-green-600 text-white hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed shadow-md px-6 py-3 text-base. font-bold rounded-lg transition duration-200 flex items-center gap-2 whitespace-nowrap" target="_blank">
+                    <i class="fas fa-file-excel"></i> Export
+                </a>
             </div>
 
             <!-- Summary Cards -->

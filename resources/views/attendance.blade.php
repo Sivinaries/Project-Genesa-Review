@@ -118,6 +118,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 text-gray-700 text-sm">
+                            @php $no = 1; @endphp
                             @foreach ($batches as $batch)
                                 <tr class="hover:bg-gray-50 transition duration-150">
                                     <td class="p-4 font-medium text-center">{{ $no++ }}</td>
